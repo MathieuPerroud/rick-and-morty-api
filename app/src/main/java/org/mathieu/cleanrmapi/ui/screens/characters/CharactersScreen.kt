@@ -44,6 +44,7 @@ import org.mathieu.cleanrmapi.ui.core.navigate
 import org.mathieu.cleanrmapi.ui.core.theme.Purple40
 
 private typealias UIState = CharactersState
+private typealias UIAction = CharactersAction
 
 @Composable
 fun CharactersScreen(navController: NavController) {
@@ -60,9 +61,7 @@ fun CharactersScreen(navController: NavController) {
 
     CharactersContent(
         state = state,
-        onSelectCharacter = { character ->
-            navController.navigate("characterDetail/${character.id}")
-        }
+        onAction = viewModel::handleAction
     )
 
 }
@@ -72,7 +71,7 @@ fun CharactersScreen(navController: NavController) {
 @Composable
 private fun CharactersContent(
     state: UIState = UIState(),
-    onSelectCharacter: (Character) -> Unit = { }
+    onAction: (UIAction) -> Unit = { }
 ) = Scaffold(topBar = {
     Text(
         modifier = Modifier
@@ -110,7 +109,9 @@ private fun CharactersContent(
                     CharacterCard(
                         modifier = Modifier
                             .padding(8.dp)
-                            .clickable { onSelectCharacter(it) },
+                            .clickable {
+                                onAction(CharactersAction.SelectedCharacter(it))
+                            },
                         character = it
                     )
                 }

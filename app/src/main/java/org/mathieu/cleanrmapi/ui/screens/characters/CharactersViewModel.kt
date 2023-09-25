@@ -4,7 +4,12 @@ import android.app.Application
 import org.koin.core.component.inject
 import org.mathieu.cleanrmapi.domain.models.character.Character
 import org.mathieu.cleanrmapi.domain.repositories.CharacterRepository
+import org.mathieu.cleanrmapi.ui.core.Destination
 import org.mathieu.cleanrmapi.ui.core.ViewModel
+
+sealed interface CharactersAction {
+    data class SelectedCharacter(val character: Character): CharactersAction
+}
 
 class CharactersViewModel(application: Application) : ViewModel<CharactersState>(CharactersState(), application) {
 
@@ -30,6 +35,15 @@ class CharactersViewModel(application: Application) : ViewModel<CharactersState>
 
     }
 
+    fun handleAction(action: CharactersAction) {
+        when(action) {
+            is CharactersAction.SelectedCharacter -> selectedCharacter(action.character)
+        }
+    }
+
+
+    private fun selectedCharacter(character: Character) =
+        sendEvent(Destination.CharacterDetails(character.id.toString()))
 
 }
 
