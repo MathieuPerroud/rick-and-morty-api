@@ -8,11 +8,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import org.mathieu.cleanrmapi.ui.core.Destination
+import org.mathieu.cleanrmapi.ui.core.composable
 import org.mathieu.cleanrmapi.ui.core.theme.LeTheme
 import org.mathieu.cleanrmapi.ui.screens.characterdetails.CharacterDetailsScreen
 import org.mathieu.cleanrmapi.ui.screens.characters.CharactersScreen
@@ -40,11 +39,10 @@ private fun MainContent() {
     //https://developer.android.com/jetpack/compose/navigation?hl=fr
     NavHost(navController = navController, startDestination = "characters") {
 
-        composable("characters") { CharactersScreen(navController) }
+        composable(Destination.Characters) { CharactersScreen(navController) }
 
         composable(
-            route = "characterDetail/{characterId}",
-            arguments = listOf(navArgument("characterId") { type = NavType.IntType })
+            destination = Destination.CharacterDetails()
         ) { backStackEntry ->
 
             CharacterDetailsScreen(

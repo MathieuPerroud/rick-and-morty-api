@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,8 +35,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import org.mathieu.cleanrmapi.domain.models.character.Character
+import org.mathieu.cleanrmapi.ui.core.Destination
 import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
+import org.mathieu.cleanrmapi.ui.core.navigate
 import org.mathieu.cleanrmapi.ui.core.theme.Purple40
 
 private typealias UIState = CharactersState
@@ -44,6 +49,14 @@ private typealias UIState = CharactersState
 fun CharactersScreen(navController: NavController) {
     val viewModel: CharactersViewModel = viewModel()
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(viewModel) {
+        viewModel.events
+            .onEach { event ->
+                if (event is Destination.CharacterDetails)
+                    navController.navigate(destination = event)
+            }.collect()
+    }
 
     CharactersContent(
         state = state,

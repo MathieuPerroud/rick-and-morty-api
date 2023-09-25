@@ -6,9 +6,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -20,10 +22,22 @@ open class ViewModel<State>(initialState: State, application: Application): Andr
     val state: StateFlow<State>
         get() = _state
 
+    private val _events = Channel<Any>(Channel.BUFFERED)
+    val events: Flow<Any>
+        get() = _events.receiveAsFlow()
+
     /** This function is made as an extension because when we call it, it is yellow
      * and this is better for our UX */
     protected fun ViewModel<State>.updateState(block: State.() -> State) {
         _state.update { block.invoke(it) }
+    }
+
+    /** This function is made as an extension because when we call it, it is yellow
+     * and this is better for our UX */
+    protected fun ViewModel<State>.sendEvent(obj: Any) {
+        viewModelScope.launch {
+            _events.send(obj)
+        }
     }
 
     /** This function is made as an extension because when we call it, it is yellow
