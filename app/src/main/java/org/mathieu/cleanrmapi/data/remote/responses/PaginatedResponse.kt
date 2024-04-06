@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
  * @property results A list of items of type [T] returned for the current page.
  */
 @Serializable
-internal data class PaginatedResponse<T>(
+data class PaginatedResponse<T>(
     val info: PaginatedInfo,
     val results: List<T>
 )
@@ -25,7 +25,7 @@ internal data class PaginatedResponse<T>(
  * @property prev A URL pointing to the previous page, or null if there is no previous page.
  */
 @Serializable
-internal data class PaginatedInfo(
+data class PaginatedInfo(
     val count: Int,
     val pages: Int,
     val next: String?,

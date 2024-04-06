@@ -1,7 +1,8 @@
 package org.mathieu.cleanrmapi.data.local.objects
 
-import io.realm.kotlin.types.RealmObject
-import io.realm.kotlin.types.annotations.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import org.mathieu.cleanrmapi.data.local.RMDatabase
 import org.mathieu.cleanrmapi.data.remote.responses.CharacterResponse
 import org.mathieu.cleanrmapi.data.repositories.tryOrNull
 import org.mathieu.cleanrmapi.domain.models.character.Character
@@ -26,37 +27,38 @@ import org.mathieu.cleanrmapi.domain.models.character.CharacterStatus
  * @property image URL pointing to the character's avatar image.
  * @property created Timestamp indicating when the character entity was created in the database.
  */
-internal class CharacterObject: RealmObject {
+@Entity(tableName = RMDatabase.CHARACTER_TABLE)
+class CharacterObject(
     @PrimaryKey
-    var id: Int = -1
-    var name: String = ""
-    var status: String = ""
-    var species: String = ""
-    var type: String = ""
-    var gender: String = ""
-    var originName: String = ""
-    var originId: Int = -1
-    var locationName: String = ""
-    var locationId: Int = -1
-    var image: String = ""
-    var created: String = ""
-}
+    val id: Int,
+    val name: String,
+    val status: String,
+    val species: String,
+    val type: String,
+    val gender: String,
+    val originName: String,
+    val originId: Int,
+    val locationName: String,
+    val locationId: Int,
+    val image: String,
+    val created: String
+)
 
 
-internal fun CharacterResponse.toRealmObject() = CharacterObject().also { obj ->
-    obj.id = id
-    obj.name = name
-    obj.status = status
-    obj.species = species
-    obj.type = type
-    obj.gender = gender
-    obj.originName = origin.name
-    obj.originId = tryOrNull { origin.url.split("/").last().toInt() } ?: -1
-    obj.locationName = location.name
-    obj.locationId = tryOrNull { location.url.split("/").last().toInt() } ?: -1
-    obj.image = image
-    obj.created = created
-}
+internal fun CharacterResponse.toRealmObject() = CharacterObject(
+    id = id,
+    name = name,
+    status = status,
+    species = species,
+    type = type,
+    gender = gender,
+    originName = origin.name,
+    originId = tryOrNull { origin.url.split("/").last().toInt() } ?: -1,
+    locationName = location.name,
+    locationId = tryOrNull { location.url.split("/").last().toInt() } ?: -1,
+    image = image,
+    created = created
+)
 
 internal fun CharacterObject.toModel() = Character(
     id = id,
