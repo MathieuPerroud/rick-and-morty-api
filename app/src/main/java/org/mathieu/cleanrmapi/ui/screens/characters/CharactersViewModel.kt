@@ -8,6 +8,8 @@ import org.mathieu.cleanrmapi.ui.core.Destination
 import org.mathieu.cleanrmapi.ui.core.ViewModel
 
 sealed interface CharactersAction {
+    object ReachedTheBottomOfTheList : CharactersAction
+
     data class SelectedCharacter(val character: Character): CharactersAction
 }
 
@@ -38,12 +40,25 @@ class CharactersViewModel(application: Application) : ViewModel<CharactersState>
     fun handleAction(action: CharactersAction) {
         when(action) {
             is CharactersAction.SelectedCharacter -> selectedCharacter(action.character)
+            CharactersAction.ReachedTheBottomOfTheList -> loadMoreCharacters()
         }
     }
 
 
     private fun selectedCharacter(character: Character) =
         sendEvent(Destination.CharacterDetails(character.id.toString()))
+
+
+    private fun loadMoreCharacters() =
+        fetchData(
+            source = characterRepository::loadMore
+        ) {
+
+            onFailure {
+                updateState { copy(error = it.toString()) }
+            }
+
+        }
 
 }
 
