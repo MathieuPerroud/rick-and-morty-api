@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Projet2"
-        android:name="org.mathieu.cleanrmapi.ui.CleanRmApiApplication"
+        android:name="org.mathieu.cleanrmapi.CleanRmApiApplication"
         tools:targetApi="31">
         <activity
             android:name="org.mathieu.cleanrmapi.ui.MainActivity"
