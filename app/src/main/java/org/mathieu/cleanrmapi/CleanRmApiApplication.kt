@@ -1,10 +1,10 @@
-package org.mathieu.cleanrmapi.ui
+package org.mathieu.cleanrmapi
 
 import android.app.Application
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import org.mathieu.cleanrmapi.di.dataModule
-import org.mathieu.cleanrmapi.di.domainModule
+import org.mathieu.cleanrmapi.data.dataModule
+import org.mathieu.cleanrmapi.ui.uiModule
 
 class CleanRmApiApplication : Application() {
     override fun onCreate() {
@@ -13,7 +13,7 @@ class CleanRmApiApplication : Application() {
         startKoin {
             androidContext(this@CleanRmApiApplication)
             modules(dataModule)
-            modules(domainModule)
+            modules(uiModule)
         }
     }
 }
