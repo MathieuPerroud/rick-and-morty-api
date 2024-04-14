@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="unknown">Inconnu</string>
+    <string name="dead">Mort</string>
+    <string name="alive">En vie</string>
+    <string name="female">Femme</string>
+    <string name="male">Homme</string>
+    <string name="genderless">Non-genré</string>
+    <string name="characters">Personnages</string>
+
+</resources>
