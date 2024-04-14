@@ -1,7 +1,9 @@
-package org.mathieu.cleanrmapi.domain.repositories
+package org.mathieu.cleanrmapi.domain.character
 
 import kotlinx.coroutines.flow.Flow
-import org.mathieu.cleanrmapi.domain.models.character.Character
+import org.mathieu.cleanrmapi.domain.character.models.Character
+import org.mathieu.cleanrmapi.domain.character.models.CharacterDetails
+import org.mathieu.cleanrmapi.domain.episode.models.Episode
 
 interface CharacterRepository {
     /**
@@ -24,5 +26,14 @@ interface CharacterRepository {
      * @param id The unique identifier of the character to be fetched.
      * @return Details of the specified character.
      */
-    suspend fun getCharacter(id: Int): Character
+    suspend fun getCharacterDetailed(id: Int): CharacterDetails
+
+    /**
+     * Fetches the episodes of a specific character.
+     *
+     * @param characterId The unique identifier of the character.
+     * @return Episodes where acts the specified character.
+     */
+    suspend fun getEpisodesWhere(characterId: Int): List<Episode>
+
 }

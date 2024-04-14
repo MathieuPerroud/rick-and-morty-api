@@ -1,29 +1,16 @@
 package org.mathieu.cleanrmapi.data.local
 
-import io.realm.kotlin.UpdatePolicy
-import io.realm.kotlin.ext.query
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import org.mathieu.cleanrmapi.data.local.objects.CharacterObject
 
 internal class CharacterLocal(private val database: RealmDatabase) {
 
-    suspend fun getCharacters(): Flow<List<CharacterObject>> = database.use {
-        query<CharacterObject>().find().asFlow().map { it.list }
-    }
+    suspend fun getCharacters(): Flow<List<CharacterObject>> = database.getAll()
 
-    suspend fun getCharacter(id: Int): CharacterObject? = database.use {
-        query<CharacterObject>("id == $id").first().find()
-    }
+    suspend fun getCharacter(id: Int): CharacterObject? = database.getOneById(id)
 
-    suspend fun saveCharacters(characters: List<CharacterObject>) = characters.onEach {
-        insert(it)
-    }
+    suspend fun saveCharacters(characters: List<CharacterObject>) = database.insert(characters)
 
-    suspend fun insert(character: CharacterObject) {
-        database.write {
-            copyToRealm(character, UpdatePolicy.ALL)
-        }
-    }
+    suspend fun insert(character: CharacterObject) = database.insert(character)
 
 }

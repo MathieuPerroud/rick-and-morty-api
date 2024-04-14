@@ -7,6 +7,9 @@ import io.ktor.client.request.parameter
 import io.ktor.http.HttpStatusCode
 import org.mathieu.cleanrmapi.data.remote.responses.CharacterResponse
 import org.mathieu.cleanrmapi.data.remote.responses.PaginatedResponse
+import org.mathieu.cleanrmapi.data.validators.IdListValidator
+import org.mathieu.cleanrmapi.data.validators.annotations.MustBeCommaSeparatedIds
+
 
 internal class CharacterApi(private val client: HttpClient) {
 
@@ -40,5 +43,27 @@ internal class CharacterApi(private val client: HttpClient) {
         .get("character/$id")
         .accept(HttpStatusCode.OK)
         .body()
+
+    /**
+     * Retrieves multiple characters by their IDs.
+     *
+     * This function accepts a list of character IDs (`ids`) and makes an API call to fetch the corresponding
+     * characters. The API expects a string of IDs separated by commas, such as "/character/1,2,3".
+     *
+     * @param ids A list of characters IDs to be retrieved.
+     * @return A paginated response containing the requested characters as `EpisodeResponse`.
+     *
+     * @throws Exception if the request fails or the response status is not `HttpStatusCode.OK`.
+     */
+    suspend fun getCharactersFromIds(@MustBeCommaSeparatedIds ids: String): List<CharacterResponse> {
+
+        IdListValidator.assertValid(ids)
+
+        return client
+            .get("character/$ids")
+            .accept(HttpStatusCode.OK)
+            .body()
+    }
+
 
 }

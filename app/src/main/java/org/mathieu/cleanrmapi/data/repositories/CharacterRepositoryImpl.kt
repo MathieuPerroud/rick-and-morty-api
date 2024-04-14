@@ -7,14 +7,23 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.mathieu.cleanrmapi.common.extensions.mapElement
+import org.mathieu.cleanrmapi.common.extensions.toList
 import org.mathieu.cleanrmapi.data.local.CharacterLocal
 import org.mathieu.cleanrmapi.data.local.objects.CharacterObject
+import org.mathieu.cleanrmapi.data.local.objects.toDetailedModel
 import org.mathieu.cleanrmapi.data.local.objects.toModel
 import org.mathieu.cleanrmapi.data.local.objects.toRealmObject
 import org.mathieu.cleanrmapi.data.remote.CharacterApi
+import org.mathieu.cleanrmapi.data.remote.EpisodeApi
 import org.mathieu.cleanrmapi.data.remote.responses.CharacterResponse
-import org.mathieu.cleanrmapi.domain.models.character.Character
-import org.mathieu.cleanrmapi.domain.repositories.CharacterRepository
+import org.mathieu.cleanrmapi.data.validators.annotations.MustBeCommaSeparatedIds
+import org.mathieu.cleanrmapi.domain.character.models.Character
+import org.mathieu.cleanrmapi.domain.character.models.CharacterDetails
+import org.mathieu.cleanrmapi.domain.episode.models.Episode
+import org.mathieu.cleanrmapi.domain.character.CharacterRepository
 
 private const val CHARACTER_PREFS = "character_repository_preferences"
 private val nextPage = intPreferencesKey("next_characters_page_to_load")
@@ -25,6 +34,7 @@ private val Context.dataStore by preferencesDataStore(
 
 internal class CharacterRepositoryImpl(
     private val context: Context,
+    private val episodeApi: EpisodeApi,
     private val characterApi: CharacterApi,
     private val characterLocal: CharacterLocal
 ) : CharacterRepository {
@@ -84,26 +94,85 @@ internal class CharacterRepositoryImpl(
      * @return The [Character] object representing the character details.
      * @throws Exception If the character cannot be found both locally and via the API.
      */
-    override suspend fun getCharacter(id: Int): Character =
-        characterLocal.getCharacter(id)?.toModel()
-            ?: characterApi.getCharacter(id = id)?.let { response ->
-                val obj = response.toRealmObject()
-                characterLocal.insert(obj)
-                obj.toModel()
-            }
-            ?: throw Exception("Character not found.")
+    override suspend fun getCharacterDetailed(id: Int): CharacterDetails {
 
+        val characterLocal = GetCharacterObjectIfExists(characterId = id)
 
-}
+        return characterLocal.toDetailedModel(
+            idsToEpisodesConverter = ::getEpisodesFromIdList
+        )
 
-
-fun <T> tryOrNull(block: () -> T) = try {
-    block()
-} catch (_: Exception) {
-    null
-}
-
-inline fun <T, R> Flow<List<T>>.mapElement(crossinline transform: suspend (value: T) -> R): Flow<List<R>> =
-    this.map { list ->
-        list.map { element -> transform(element) }
     }
+
+    override suspend fun getEpisodesWhere(characterId: Int): List<Episode> {
+        val characterLocal = GetCharacterObjectIfExists(characterId)
+
+        return getEpisodesFromIdList(idList = characterLocal.episodesIds)
+
+    }
+
+    private suspend fun getEpisodesFromIdList(@MustBeCommaSeparatedIds idList: String): List<Episode> {
+
+        //TODO: fetch system
+
+        return if (idList.contains(",")) {
+            val episodesResponse = episodeApi.getEpisodesFromIds(ids = idList)
+            episodesResponse.map { it.toRealmObject().toModel() }
+        } else {
+            val episodeResponse = episodeApi.getEpisode(idList.toInt())
+            episodeResponse?.toRealmObject()?.toModel()?.toList() ?: emptyList()
+        }
+
+    }
+
+}
+
+/**
+ * Orchestrates the retrieval of a CharacterObject by attempting to fetch it locally first,
+ * then remotely if it's not found in the local storage.
+ *
+ *  Note: By abstracting away part of the `getCharacter` repository implementation logic into a sequential,
+ *  clearly-defined process, this approach aims to improve code readability and maintainability.
+ *  It leverages the principle of separation of concerns, ensuring efficient data retrieval by minimizing
+ *  network requests and providing a robust mechanism for error handling when character data cannot be found.
+ *
+ * @param characterId The unique identifier for the character to be retrieved. This ID is used first
+ * to attempt to fetch the character from local storage and then from a remote source if necessary.
+ *
+ * @return A CharacterObject instance representing the character details. If the character is not found
+ * locally, it is fetched from the remote API, converted into a realm object, and saved locally before
+ * being returned.
+ *
+ * @throws Exception when the character cannot be found both locally and remotely.
+ *
+ */
+private object GetCharacterObjectIfExists : KoinComponent {
+
+    private val characterApi: CharacterApi by inject()
+    private val characterLocal: CharacterLocal by inject()
+
+
+    suspend operator fun invoke(characterId: Int): CharacterObject =
+        tryToGetCharacterLocally(characterId)
+            .fetchRemotelyIfNotFound(characterId)
+            .throwIfWeCannotFindIt()
+
+
+    private suspend fun tryToGetCharacterLocally(id: Int) = characterLocal.getCharacter(id)
+
+    private suspend fun CharacterObject?.fetchRemotelyIfNotFound(id: Int): CharacterObject? {
+        if (this != null) return this
+
+        return characterApi.getCharacter(id = id)
+            ?.toRealmObject()
+            ?.also { obj ->
+                characterLocal.insert(obj)
+            }
+    }
+
+    private fun CharacterObject?.throwIfWeCannotFindIt(): CharacterObject {
+        if (this != null) return this
+        throw Exception("Could not find Character locally and remotely.")
+    }
+
+}

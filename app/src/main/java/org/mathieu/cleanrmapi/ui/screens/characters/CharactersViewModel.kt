@@ -2,8 +2,8 @@ package org.mathieu.cleanrmapi.ui.screens.characters
 
 import android.app.Application
 import org.koin.core.component.inject
-import org.mathieu.cleanrmapi.domain.models.character.Character
-import org.mathieu.cleanrmapi.domain.repositories.CharacterRepository
+import org.mathieu.cleanrmapi.domain.character.models.Character
+import org.mathieu.cleanrmapi.domain.character.CharacterRepository
 import org.mathieu.cleanrmapi.ui.core.Destination
 import org.mathieu.cleanrmapi.ui.core.ViewModel
 
