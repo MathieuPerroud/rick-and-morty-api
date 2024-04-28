@@ -6,14 +6,9 @@ import org.mathieu.cleanrmapi.domain.character.models.Character
 import org.mathieu.cleanrmapi.domain.character.CharacterRepository
 import org.mathieu.cleanrmapi.ui.core.Destination
 import org.mathieu.cleanrmapi.ui.core.ViewModel
+import org.mathieu.cleanrmapi.ui.screens.characters.CharactersContracts.*
 
-sealed interface CharactersAction {
-    object ReachedTheBottomOfTheList : CharactersAction
-
-    data class SelectedCharacter(val character: Character): CharactersAction
-}
-
-class CharactersViewModel(application: Application) : ViewModel<CharactersState>(CharactersState(), application) {
+class CharactersViewModel(application: Application) : ViewModel<UiState>(UiState(), application) {
 
     private val characterRepository: CharacterRepository by inject()
 
@@ -37,10 +32,10 @@ class CharactersViewModel(application: Application) : ViewModel<CharactersState>
 
     }
 
-    fun handleAction(action: CharactersAction) {
+    fun handleAction(action: UiAction) {
         when(action) {
-            is CharactersAction.SelectedCharacter -> selectedCharacter(action.character)
-            CharactersAction.ReachedTheBottomOfTheList -> loadMoreCharacters()
+            is SelectedCharacter -> selectedCharacter(action.character)
+            ReachedTheBottomOfTheList -> loadMoreCharacters()
         }
     }
 
@@ -62,9 +57,17 @@ class CharactersViewModel(application: Application) : ViewModel<CharactersState>
 
 }
 
+interface CharactersContracts {
+    data class UiState(
+        val isLoading: Boolean = true,
+        val characters: List<Character> = emptyList(),
+        val error: String? = null
+    )
 
-data class CharactersState(
-    val isLoading: Boolean = true,
-    val characters: List<Character> = emptyList(),
-    val error: String? = null
-)
+    sealed interface UiAction
+    object ReachedTheBottomOfTheList : UiAction
+    data class SelectedCharacter(val character: Character): UiAction
+
+}
+
+

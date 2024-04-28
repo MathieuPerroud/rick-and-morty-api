@@ -30,10 +30,8 @@ import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
 import org.mathieu.cleanrmapi.ui.core.composables.Screen
 import org.mathieu.cleanrmapi.ui.core.theme.OnPrimaryColor
 import org.mathieu.cleanrmapi.ui.core.theme.PrimaryColor
+import org.mathieu.cleanrmapi.ui.screens.characters.CharactersContracts.*
 import org.mathieu.projet2.R
-
-private typealias UIState = CharactersState
-private typealias UIAction = CharactersAction
 
 @Composable
 fun CharactersScreen(navController: NavController) {
@@ -45,7 +43,7 @@ fun CharactersScreen(navController: NavController) {
 
         Content(
             state = state,
-            onAction = viewModel::handleAction
+            handleAction = viewModel::handleAction
         )
     }
 
@@ -55,8 +53,8 @@ fun CharactersScreen(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 private fun Content(
-    state: UIState = UIState(),
-    onAction: (UIAction) -> Unit = { }
+    state: UiState = UiState(),
+    handleAction: UiAction.() -> Unit = { }
 ) = Scaffold(bottomBar = {
     Text(
         modifier = Modifier
@@ -98,13 +96,13 @@ private fun Content(
                     CharacterCard(
                         modifier = Modifier
                             .clickable {
-                                onAction(CharactersAction.SelectedCharacter(character))
+                                SelectedCharacter(character).handleAction()
                             },
                         character = character
                     )
 
                     if (index == state.characters.size - 1) {
-                        onAction(CharactersAction.ReachedTheBottomOfTheList)
+                        handleAction(ReachedTheBottomOfTheList)
                     }
                 }
 
