@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Material colors -->
+    <color name="primary">@color/brand_blue</color>
+    <color name="on_primary">@android:color/white</color>
+    <color name="secondary">@color/granny_smith_apple</color>
+    <color name="on_secondary">@color/on_primary</color>
+    <color name="background">@color/alabaster</color>
+    <color name="on_background">@color/limed_spruce</color>
+    <color name="surface">@android:color/white</color>
+    <color name="on_surface">@color/on_background</color>
+
+</resources>

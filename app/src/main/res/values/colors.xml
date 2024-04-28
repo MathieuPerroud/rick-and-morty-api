@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+
+    <!-- Raw colors -->
+    <color name="alabaster">#FFFCFCFC</color>
+    <color name="foam">#FFE3F7FD</color>
+    <color name="feta">#FFF0FBEB</color>
+    <color name="tonys_pink">#FFE89E89</color>
+    <color name="granny_smith_apple">#FFAAE48B</color>
+    <color name="sky_blue">#FF6DD2ED</color>
+    <color name="outer_space_dark">#FF1F2D31</color>
+    <color name="outer_space">#FF2D383A</color>
+    <color name="tundora">#FF444444</color>
+    <color name="limed_spruce">#FF3C545B</color>
+
+    <!-- Business colors -->
+    <color name="brand_blue">@color/sky_blue</color>
+    <color name="success">@color/granny_smith_apple</color>
+    <color name="failure">@color/tonys_pink</color>
+
+    <!-- Material colors -->
+    <color name="primary"/>
+    <color name="on_primary"/>
+    <color name="secondary"/>
+    <color name="on_secondary"/>
+    <color name="background"/>
+    <color name="on_background"/>
+    <color name="surface"/>
+    <color name="on_surface"/>
+    <color name="error">@color/failure</color>
+
+
 </resources>

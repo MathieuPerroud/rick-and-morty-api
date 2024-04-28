@@ -14,30 +14,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.colorResource
 import androidx.core.view.WindowCompat
+import org.mathieu.projet2.R
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFf0fbeb),
-    onPrimary = Color.DarkGray,
-    secondary = Color(0xFFe3f7fd),
-    background = Color(0xFF1f2d31),
-    surface = Color(0xFF223034),
-)
+private val DarkColorScheme
+    @Composable
+    get() = darkColorScheme(
+        primary = colorResource(id = R.color.primary),
+        onPrimary = colorResource(id = R.color.on_primary),
+        secondary = colorResource(id = R.color.secondary),
+        onSecondary = colorResource(id = R.color.on_secondary),
+        background = colorResource(id = R.color.background),
+        onBackground = colorResource(id = R.color.on_background),
+        surface = colorResource(id = R.color.surface),
+        onSurface = colorResource(id = R.color.on_surface),
+    )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF6dd2ed),
-    onPrimary = Color.White,
-    secondary = Color(0xFFaae48b),
-    background = Color(0xFFFcFcFc),
-    surface = Color(0xFFFFFFFF),
-    onBackground = Color(0xFF3c545b),
-    error = Color(0xFFe89e89)
-)
+//Here we are using the legacy color system with flavored resources, we could have defined Colors
+// directly into a `Colors.kt` file.
+// Material ColorScheme is useful when we work with `.material3` related composables which have theme
+// already applied to.
+private val LightColorScheme
+    @Composable
+    get() = lightColorScheme(
+        primary = colorResource(id = R.color.primary),
+        onPrimary = colorResource(id = R.color.on_primary),
+        secondary = colorResource(id = R.color.secondary),
+        onSecondary = colorResource(id = R.color.on_secondary),
+        background = colorResource(id = R.color.background),
+        onBackground = colorResource(id = R.color.on_background),
+        surface = colorResource(id = R.color.surface),
+        onSurface = colorResource(id = R.color.on_surface),
+    )
 
 @Composable
 fun LeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -45,6 +58,7 @@ fun LeTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
     val view = LocalView.current
 
     if (!view.isInEditMode) {
