@@ -15,4 +15,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Clean RmApi + MVI"
 include(":app")
- 
+include(":core:data")
+include(":core:domain")
+include(":core:ui")
+include(":features:characters")
