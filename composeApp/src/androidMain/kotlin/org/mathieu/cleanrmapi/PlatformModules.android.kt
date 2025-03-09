@@ -1,4 +1,4 @@
-package org.mathieu.cleanrmapi.ui
+package org.mathieu.cleanrmapi
 
 import android.content.Context
 import coil.ImageLoader
@@ -6,8 +6,18 @@ import coil.decode.ImageDecoderDecoder
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import org.koin.dsl.module
+import org.mathieu.cleanrmapi.data.dataStoreModule
+import org.mathieu.cleanrmapi.data.databaseBuilderModule
+import org.mathieu.cleanrmapi.data.databaseModule
 
-val uiModule = module {
+actual fun platformModules() = listOf(
+    coilCacheModule,
+    databaseModule,
+    databaseBuilderModule,
+    dataStoreModule
+)
+
+private val coilCacheModule = module {
     single {
 
         val context: Context = get()
