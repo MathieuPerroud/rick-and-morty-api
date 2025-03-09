@@ -1,5 +1,7 @@
 package org.mathieu.cleanrmapi.domain.episode.models
 
+import org.mathieu.cleanrmapi.domain.character.models.Character
+
 /**
  * Represents a detailed description of an episode.
  *
@@ -14,9 +16,9 @@ data class EpisodeWithCharacters(
     val name: String,
     val airDate: String,
     val episode: String,
-    val characters: List<org.mathieu.cleanrmapi.domain.character.models.Character>
+    val characters: List<Character>
 ) {
-    constructor(episode: Episode, characters: List<org.mathieu.cleanrmapi.domain.character.models.Character>) : this(
+    constructor(episode: Episode, characters: List<Character>) : this(
         id = episode.id,
         name = episode.name,
         airDate = episode.airDate,

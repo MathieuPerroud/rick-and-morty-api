@@ -1,4 +1,4 @@
-package org.mathieu.cleanrmapi.common.extensions
+package org.mathieu.cleanrmapi.common
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
