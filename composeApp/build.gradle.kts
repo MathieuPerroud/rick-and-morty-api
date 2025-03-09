@@ -2,6 +2,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
@@ -60,11 +61,15 @@ kotlin {
 
         common {
             group("nonJs") {
-                withAndroidTarget()
-                withJvm()
-                group("ios") {
-                    withIos()
+
+                group("mobile") {
+                    withAndroidTarget()
+                    group("ios") {
+                        withIos()
+                    }
                 }
+
+                withJvm()
             }
         }
     }
@@ -73,20 +78,18 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
-        all{
+        //TODO: rename sources with numbers and underscore in order to sort it as they are declared. (e.g. 1_commonMain)
+
+        all {
             languageSettings {
-                @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 compilerOptions{
                     freeCompilerArgs.add("-Xexpect-actual-classes")
                 }
             }
         }
 
+        // Dependencies for every platforms
         commonMain.dependencies {
-//            api(project(":domain"))
-
-//            implementation(libs.ktor.client.logging)
-//            implementation(libs.ktor.client.content.negotiation)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -104,8 +107,13 @@ kotlin {
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.core)
 
+            // ktor
+            ktor(platform = Platform.Common)
+
+
         }
 
+        // Dependencies for every platforms but wasmJs
         val nonJsMain by getting {
             dependencies {
                 //room
@@ -114,33 +122,58 @@ kotlin {
             }
         }
 
+        // Dependencies for iOS and Android only
+        val mobileMain by getting {
+            dependencies {
+                //DataStore
+                datastore()
+            }
+        }
+
+        // Specific platforms
         androidMain.dependencies {
-//            implementation(libs.ktor.client.android)
-//            implementation(libs.ktor.client.okhttp)
-//
-//            implementation(libs.paging.room)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.androidx.compose)
             implementation(libs.koin.android)
-            //Koin
-            implementation( "io.insert-koin:koin-androidx-compose:3.5.6")
-            implementation("io.insert-koin:koin-android:3.5.6")
+
+            //Compose
+            implementation(platform("androidx.compose:compose-bom:2025.02.00"))
+            implementation("androidx.compose.ui:ui")
+            implementation("androidx.compose.ui:ui-graphics")
+            implementation("androidx.compose.ui:ui-tooling-preview")
+            implementation("androidx.compose.material3:material3")
+            implementation("androidx.compose.material:material-icons-extended")
+            implementation("androidx.navigation:navigation-compose:2.8.8")
+
+
+            // Coil
+            coil()
+
+            // Ktor
+            ktor(platform = Platform.Android)
         }
 
         iosMain.dependencies {
-//            implementation(libs.ktor.client.darwin)
+            // Ktor
+            ktor(platform = Platform.Ios)
+
         }
 
         desktopMain.dependencies {
-            //implementation(libs.ktor.client.okhttp)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+
+            // Ktor
+            ktor(platform = Platform.Desktop)
+
         }
 
         wasmJsMain.dependencies {
-//            implementation(libs.ktor.client.js)
+            // Ktor
+            ktor(platform = Platform.WasmJs)
         }
+
     }
 
 }
@@ -163,7 +196,7 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.mathieu.projet2"
+        applicationId = "org.mathieu.cleanrmapi"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -175,11 +208,6 @@ android {
         }
     }
 
-//    buildTypes {
-//        getByName("release") {
-//            isMinifyEnabled = false
-//        }
-//    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -209,53 +237,50 @@ android {
 
 dependencies {
 
-    //Android
-    implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("androidx.datastore:datastore-preferences:1.1.3")
-    implementation("androidx.datastore:datastore:1.1.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
-
-    //Compose
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation(platform("androidx.compose:compose-bom:2025.02.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.navigation:navigation-compose:2.8.8")
-
-    // Coil
-    implementation("io.coil-kt:coil:2.6.0")
-    implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation("io.coil-kt:coil-gif:2.6.0")
-
-
-    //Ktor
-    implementation("io.ktor:ktor-client-core:2.3.4")
-    implementation("io.ktor:ktor-client-cio:2.3.4")
-    implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
-
-
     // KSP support for Room Compiler.
     add("kspAndroid", libs.room.compiler)
     add("kspIosSimulatorArm64", libs.room.compiler)
     add("kspIosX64", libs.room.compiler)
     add("kspIosArm64", libs.room.compiler)
+
     //Testing
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.02.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
     debugImplementation(compose.uiTooling)
 
 }
 
-// set schema..
+
+private enum class Platform {
+    Common, Ios, Android, Desktop, WasmJs
+}
+
+private fun KotlinDependencyHandler.ktor(
+    platform: Platform
+) {
+    when (platform) {
+        Platform.Ios -> implementation(libs.ktor.client.darwin)
+        Platform.Android -> implementation(libs.ktor.client.okhttp)
+        Platform.Desktop -> implementation(libs.ktor.client.okhttp)
+        Platform.WasmJs -> implementation(libs.ktor.client.js)
+        Platform.Common -> {
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.negotiation)
+            implementation(libs.ktor.json)
+        }
+    }
+}
+
+private fun KotlinDependencyHandler.datastore() {
+    implementation(libs.datastore.preferences)
+    implementation(libs.datastore)
+}
+
+private fun KotlinDependencyHandler.coil() {
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
+}
+
 room {
     schemaDirectory("$projectDir/schemas")
 }
