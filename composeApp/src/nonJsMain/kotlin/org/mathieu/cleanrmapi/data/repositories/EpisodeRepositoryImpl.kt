@@ -5,13 +5,14 @@ import org.koin.core.component.inject
 import org.mathieu.cleanrmapi.common.toList
 import org.mathieu.cleanrmapi.data.local.EpisodeDAO
 import org.mathieu.cleanrmapi.data.local.objects.EpisodeObject
+import org.mathieu.cleanrmapi.data.local.objects.toDBObject
 import org.mathieu.cleanrmapi.data.local.objects.toModel
 import org.mathieu.cleanrmapi.data.remote.CharacterApi
 import org.mathieu.cleanrmapi.data.remote.EpisodeApi
-import org.mathieu.cleanrmapi.data.remote.responses.toDBObject
 import org.mathieu.cleanrmapi.domain.character.models.Character
 import org.mathieu.cleanrmapi.domain.episode.EpisodeRepository
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
+
 
 internal class EpisodeRepositoryImpl(
     private val characterApi: CharacterApi

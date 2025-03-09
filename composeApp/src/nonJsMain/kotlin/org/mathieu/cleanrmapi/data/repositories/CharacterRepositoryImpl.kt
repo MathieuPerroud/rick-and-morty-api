@@ -1,39 +1,32 @@
 package org.mathieu.cleanrmapi.data.repositories
 
-import android.content.Context
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.mathieu.cleanrmapi.common.mapElement
 import org.mathieu.cleanrmapi.common.toList
 import org.mathieu.cleanrmapi.data.local.CharacterDAO
+import org.mathieu.cleanrmapi.data.local.DataStore
 import org.mathieu.cleanrmapi.data.local.objects.CharacterObject
+import org.mathieu.cleanrmapi.data.local.objects.toDBObject
 import org.mathieu.cleanrmapi.data.local.objects.toDetailedModel
 import org.mathieu.cleanrmapi.data.local.objects.toModel
 import org.mathieu.cleanrmapi.data.remote.CharacterApi
 import org.mathieu.cleanrmapi.data.remote.EpisodeApi
 import org.mathieu.cleanrmapi.data.remote.responses.CharacterResponse
-import org.mathieu.cleanrmapi.data.remote.responses.toDBObject
 import org.mathieu.cleanrmapi.data.validators.annotations.MustBeCommaSeparatedIds
+import org.mathieu.cleanrmapi.domain.character.CharacterRepository
 import org.mathieu.cleanrmapi.domain.character.models.Character
 import org.mathieu.cleanrmapi.domain.character.models.CharacterDetails
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
-import org.mathieu.cleanrmapi.domain.character.CharacterRepository
+
 
 private const val CHARACTER_PREFS = "character_repository_preferences"
-private val nextPage = intPreferencesKey("next_characters_page_to_load")
-
-private val Context.dataStore by preferencesDataStore(
-    name = CHARACTER_PREFS
-)
+private const val nextPage = "next_characters_page_to_load"
 
 internal class CharacterRepositoryImpl(
-    private val context: Context,
+    private val dataStore: DataStore,
     private val episodeApi: EpisodeApi,
     private val characterApi: CharacterApi,
     private val characterDAO: CharacterDAO
@@ -60,7 +53,7 @@ internal class CharacterRepositoryImpl(
      */
     private suspend fun fetchNext() {
 
-        val page = context.dataStore.data.map { prefs -> prefs[nextPage] }.first()
+        val page: Int? = dataStore.retrieveFrom(nextPage)
 
         if (page != -1) {
 
@@ -68,7 +61,7 @@ internal class CharacterRepositoryImpl(
 
             val nextPageToLoad = response.info.next?.split("?page=")?.last()?.toInt() ?: -1
 
-            context.dataStore.edit { prefs -> prefs[nextPage] = nextPageToLoad }
+            dataStore.storeInto(nextPage, nextPageToLoad)
 
             val objects = response.results.map(transform = CharacterResponse::toDBObject)
 
@@ -126,7 +119,6 @@ internal class CharacterRepositoryImpl(
     }
 
 }
-
 /**
  * Orchestrates the retrieval of a CharacterObject by attempting to fetch it locally first,
  * then remotely if it's not found in the local storage.
