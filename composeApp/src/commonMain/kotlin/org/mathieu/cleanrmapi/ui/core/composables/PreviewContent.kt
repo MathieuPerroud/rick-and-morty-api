@@ -12,13 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import org.mathieu.cleanrmapi.ui.core.theme.LeTheme
 
 @Composable
 fun PreviewContent(content: @Composable BoxScope.() -> Unit) {
-    LeTheme {
+//    LeTheme {
         Box(modifier = Modifier.background(Color.White), content = content)
-    }
+//    }
 }
 
 @Composable
@@ -27,13 +26,13 @@ fun PreviewContent(
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(spacingVertical),
     content: @Composable ColumnScope.() -> Unit
 ) {
-    LeTheme {
+//    LeTheme {
         Column(
             modifier = Modifier.background(Color.White),
             verticalArrangement = verticalArrangement,
             content = content
         )
-    }
+//    }
 }
 
 @Composable
@@ -42,11 +41,11 @@ fun PreviewContent(
     horizontalArrangement: Arrangement.Horizontal =  Arrangement.spacedBy(spacingHorizontal),
     content: @Composable RowScope.() -> Unit
 ) {
-    LeTheme {
+//    LeTheme {
         Row(
             modifier = Modifier.background(Color.White),
             horizontalArrangement = horizontalArrangement,
             content = content
         )
-    }
+//    }
 }

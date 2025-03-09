@@ -1,7 +1,6 @@
 package org.mathieu.cleanrmapi.ui.screens.characters
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,21 +10,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import org.mathieu.cleanrmapi.R
+import cleanrmapiudf.composeapp.generated.resources.Res
+import cleanrmapiudf.composeapp.generated.resources.characters
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mathieu.cleanrmapi.ui.core.composables.CharacterCard
 import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
 import org.mathieu.cleanrmapi.ui.core.composables.Screen
@@ -50,7 +49,6 @@ fun CharactersScreen(navController: NavController) {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 private fun Content(
     state: UiState = UiState(),
@@ -61,7 +59,7 @@ private fun Content(
             .background(PrimaryColor)
             .padding(16.dp)
             .fillMaxWidth(),
-        text = stringResource(R.string.characters),
+        text = stringResource(Res.string.characters),
         textAlign = TextAlign.Center,
         color = OnPrimaryColor,
         fontSize = 16.sp,

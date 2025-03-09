@@ -2,8 +2,6 @@
 
 package org.mathieu.cleanrmapi.ui.core
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -15,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-open class ViewModel<State>(initialState: State, application: Application): AndroidViewModel(application),
+open class ViewModel<State>(initialState: State): androidx.lifecycle.ViewModel(),
     KoinComponent {
 
     private val _state = MutableStateFlow(initialState)
@@ -42,11 +40,11 @@ open class ViewModel<State>(initialState: State, application: Application): Andr
 
     /** This function is made as an extension because when we call it, it is yellow
      * and this is better for our UX too*/
-    fun <T> AndroidViewModel.collectData(
+    fun <T> androidx.lifecycle.ViewModel.collectData(
         source: suspend () -> Flow<T>,
         onResult: Result<T>.() -> Unit
     ) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Default) {
 
             try {
                 source().collect { newValue ->
@@ -61,11 +59,11 @@ open class ViewModel<State>(initialState: State, application: Application): Andr
 
     }
 
-    fun <T> AndroidViewModel.fetchData(
+    fun <T> androidx.lifecycle.ViewModel.fetchData(
         source: suspend () -> T,
         onResult: Result<T>.() -> Unit
     ) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Default) {
 
             try {
                 val success = source()

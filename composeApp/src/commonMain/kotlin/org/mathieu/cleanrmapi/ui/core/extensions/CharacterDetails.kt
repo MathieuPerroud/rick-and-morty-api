@@ -9,8 +9,14 @@ import androidx.compose.material.icons.rounded.Male
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
-import org.mathieu.cleanrmapi.R
+import cleanrmapiudf.composeapp.generated.resources.Res
+import cleanrmapiudf.composeapp.generated.resources.alive
+import cleanrmapiudf.composeapp.generated.resources.dead
+import cleanrmapiudf.composeapp.generated.resources.female
+import cleanrmapiudf.composeapp.generated.resources.genderless
+import cleanrmapiudf.composeapp.generated.resources.male
+import cleanrmapiudf.composeapp.generated.resources.unknown
+import org.jetbrains.compose.resources.stringResource
 import org.mathieu.cleanrmapi.domain.character.models.CharacterGender
 import org.mathieu.cleanrmapi.domain.character.models.CharacterStatus
 
@@ -24,9 +30,9 @@ val CharacterStatus.imageVector: ImageVector
 
 val CharacterStatus.text: String
     @Composable get() = when (this) {
-        CharacterStatus.Alive -> stringResource(id = R.string.alive)
-        CharacterStatus.Dead -> stringResource(id = R.string.dead)
-        CharacterStatus.Unknown -> stringResource(id = R.string.unknown)
+        CharacterStatus.Alive -> stringResource(Res.string.alive)
+        CharacterStatus.Dead -> stringResource(Res.string.dead)
+        CharacterStatus.Unknown -> stringResource(Res.string.unknown)
     }
 
 val CharacterGender.imageVector: ImageVector
@@ -39,8 +45,8 @@ val CharacterGender.imageVector: ImageVector
 
 val CharacterGender.text: String
     @Composable get() = when (this) {
-        CharacterGender.Female -> stringResource(id = R.string.female)
-        CharacterGender.Male -> stringResource(id = R.string.male)
-        CharacterGender.Genderless -> stringResource(id = R.string.genderless)
-        CharacterGender.Unknown -> stringResource(id = R.string.unknown)
+        CharacterGender.Female -> stringResource(Res.string.female)
+        CharacterGender.Male -> stringResource(Res.string.male)
+        CharacterGender.Genderless -> stringResource(Res.string.genderless)
+        CharacterGender.Unknown -> stringResource(Res.string.unknown)
     }

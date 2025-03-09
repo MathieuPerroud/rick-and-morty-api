@@ -1,6 +1,5 @@
 package org.mathieu.cleanrmapi.ui.core.composables
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,13 +27,13 @@ fun <State, VM: ViewModel<State>> Screen(
     val focusManager = LocalFocusManager.current
 
     // Handle back press event.
-    if (onBack != null)
-        BackHandler(
-            onBack = {
-                focusManager.clearFocus()
-                onBack(state, viewModel)
-            }
-        )
+//    if (onBack != null) TODO: Here
+//        BackHandler(
+//            onBack = {
+//                focusManager.clearFocus()
+//                onBack(state, viewModel)
+//            }
+//        )
 
     // Collect events emitted by the ViewModel.
     LaunchedEffect(viewModel) {

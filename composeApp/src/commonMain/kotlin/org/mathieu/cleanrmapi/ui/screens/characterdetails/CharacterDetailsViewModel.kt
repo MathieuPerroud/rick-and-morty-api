@@ -1,6 +1,5 @@
 package org.mathieu.cleanrmapi.ui.screens.characterdetails
 
-import android.app.Application
 import org.koin.core.component.inject
 import org.mathieu.cleanrmapi.domain.character.CharacterRepository
 import org.mathieu.cleanrmapi.domain.character.models.CharacterGender
@@ -13,8 +12,8 @@ sealed interface CharacterDetailsAction {
     data class SelectedEpisode(val episode: Episode): CharacterDetailsAction
 }
 
-class CharacterDetailsViewModel(application: Application) :
-    ViewModel<CharacterDetailsState>(CharacterDetailsState.Loading, application) {
+class CharacterDetailsViewModel :
+    ViewModel<CharacterDetailsState>(CharacterDetailsState.Loading) {
 
     private val characterRepository: CharacterRepository by inject()
 
@@ -40,7 +39,7 @@ class CharacterDetailsViewModel(application: Application) :
 
             onFailure {
                 updateState {
-                    CharacterDetailsState.Error(message = it.localizedMessage ?: it.toString())
+                    CharacterDetailsState.Error(message = it.message ?: it.toString())
                 }
             }
 

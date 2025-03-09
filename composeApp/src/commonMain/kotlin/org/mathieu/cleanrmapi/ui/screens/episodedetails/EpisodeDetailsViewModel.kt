@@ -1,6 +1,5 @@
 package org.mathieu.cleanrmapi.ui.screens.episodedetails
 
-import android.app.Application
 import org.mathieu.cleanrmapi.domain.character.models.Character
 import org.mathieu.cleanrmapi.domain.episode.usecases.GetEpisodeWithCharacters
 import org.mathieu.cleanrmapi.ui.core.Destination
@@ -10,8 +9,8 @@ sealed interface EpisodeDetailsAction {
     data class SelectedCharacter(val character: Character): EpisodeDetailsAction
 }
 
-class EpisodeDetailsViewModel(application: Application) :
-    ViewModel<EpisodeDetailsState>(EpisodeDetailsState.Loading, application) {
+class EpisodeDetailsViewModel :
+    ViewModel<EpisodeDetailsState>(EpisodeDetailsState.Loading) {
 
     fun init(episodeId: Int) {
 
@@ -31,7 +30,7 @@ class EpisodeDetailsViewModel(application: Application) :
 
             onFailure {
                 updateState {
-                    EpisodeDetailsState.Error(message = it.localizedMessage ?: it.toString())
+                    EpisodeDetailsState.Error(message = it.message ?: it.toString())
                 }
             }
 
@@ -55,7 +54,7 @@ class EpisodeDetailsViewModel(application: Application) :
 }
 
 sealed interface EpisodeDetailsState {
-    object Loading : EpisodeDetailsState
+    data object Loading : EpisodeDetailsState
 
     data class Error(val message: String) : EpisodeDetailsState
 

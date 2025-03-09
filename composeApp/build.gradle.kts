@@ -16,7 +16,6 @@ plugins {
 }
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_1_8)
         }
@@ -76,9 +75,8 @@ kotlin {
 
 
     sourceSets {
-        val desktopMain by getting
 
-        //TODO: rename sources with numbers and underscore in order to sort it as they are declared. (e.g. 1_commonMain)
+        val desktopMain by getting
 
         all {
             languageSettings {
@@ -90,26 +88,24 @@ kotlin {
 
         // Dependencies for every platforms
         commonMain.dependencies {
+            //Compose
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.compose.navigation)
+            implementation(compose.materialIconsExtended)
+            implementation(compose.preview)
 
-            //JetBrains
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+            coil()
 
-            // koin
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
+            kotlinx()
 
-            // ktor
+            koin()
+
             ktor(platform = Platform.Common)
-
 
         }
 
@@ -125,52 +121,28 @@ kotlin {
         // Dependencies for iOS and Android only
         val mobileMain by getting {
             dependencies {
-                //DataStore
                 datastore()
             }
         }
 
         // Specific platforms
         androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.koin.androidx.compose)
-            implementation(libs.koin.android)
-
-            //Compose
-            implementation(platform("androidx.compose:compose-bom:2025.02.00"))
-            implementation("androidx.compose.ui:ui")
-            implementation("androidx.compose.ui:ui-graphics")
-            implementation("androidx.compose.ui:ui-tooling-preview")
-            implementation("androidx.compose.material3:material3")
-            implementation("androidx.compose.material:material-icons-extended")
-            implementation("androidx.navigation:navigation-compose:2.8.8")
-
-
-            // Coil
-            coil()
-
-            // Ktor
             ktor(platform = Platform.Android)
         }
 
         iosMain.dependencies {
-            // Ktor
             ktor(platform = Platform.Ios)
-
         }
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
 
-            // Ktor
             ktor(platform = Platform.Desktop)
 
         }
 
         wasmJsMain.dependencies {
-            // Ktor
             ktor(platform = Platform.WasmJs)
         }
 
@@ -270,15 +242,25 @@ private fun KotlinDependencyHandler.ktor(
     }
 }
 
+private fun KotlinDependencyHandler.koin() {
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.android)
+    implementation(libs.koin.core)
+}
+
+private fun KotlinDependencyHandler.kotlinx() {
+    implementation(libs.jetbrains.kotlinx.coroutines.core)
+    implementation(libs.jetbrains.kotlinx.serialization.json)
+}
 private fun KotlinDependencyHandler.datastore() {
     implementation(libs.datastore.preferences)
     implementation(libs.datastore)
 }
 
 private fun KotlinDependencyHandler.coil() {
-    implementation(libs.coil)
+    implementation(libs.coil.network)
     implementation(libs.coil.compose)
-    implementation(libs.coil.gif)
 }
 
 room {
