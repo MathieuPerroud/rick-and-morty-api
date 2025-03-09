@@ -1,9 +1,6 @@
 package org.mathieu.cleanrmapi.data.remote.responses
 
 import kotlinx.serialization.Serializable
-import org.mathieu.cleanrmapi.common.tryOrNull
-import org.mathieu.cleanrmapi.data.extensions.extractIdsFromUrls
-import org.mathieu.cleanrmapi.data.local.objects.CharacterObject
 
 /**
  * Represents detailed information about a character, typically received from an API response.
@@ -40,19 +37,3 @@ data class CharacterResponse(
 @Serializable
 data class CharacterLocationResponse(val name: String, val url: String)
 
-
-internal fun CharacterResponse.toDBObject() = CharacterObject(
-    id = id,
-    name = name,
-    status = status,
-    species = species,
-    type = type,
-    gender = gender,
-    originName = origin.name,
-    originId = tryOrNull { origin.url.split("/").last().toInt() } ?: -1,
-    locationName = location.name,
-    locationId = tryOrNull { location.url.split("/").last().toInt() } ?: -1,
-    image = image,
-    episodesIds = episode.extractIdsFromUrls(),
-    created = created
-)

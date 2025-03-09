@@ -1,8 +1,6 @@
 package org.mathieu.cleanrmapi.data.remote.responses
 
 import kotlinx.serialization.Serializable
-import org.mathieu.cleanrmapi.data.extensions.extractIdsFromUrls
-import org.mathieu.cleanrmapi.data.local.objects.EpisodeObject
 
 /**
  * Represents detailed information about an episode, typically received from an API response.
@@ -24,14 +22,4 @@ internal data class EpisodeResponse (
     val characters: List<String>,
     val url: String,
     val created: String
-)
-
-internal fun EpisodeResponse.toDBObject() = EpisodeObject(
-    id = id,
-    name = name,
-    airDate = air_date,
-    episode = episode,
-    charactersIds = characters.extractIdsFromUrls(),
-    created = created
-
 )

@@ -3,7 +3,9 @@ package org.mathieu.cleanrmapi.data.local.objects
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.mathieu.cleanrmapi.common.tryOrNull
+import org.mathieu.cleanrmapi.data.extensions.extractIdsFromUrls
 import org.mathieu.cleanrmapi.data.local.RMDatabase
+import org.mathieu.cleanrmapi.data.remote.responses.CharacterResponse
 import org.mathieu.cleanrmapi.data.validators.annotations.MustBeCommaSeparatedIds
 import org.mathieu.cleanrmapi.domain.character.models.Character
 import org.mathieu.cleanrmapi.domain.character.models.CharacterDetails
@@ -61,6 +63,23 @@ internal suspend fun CharacterObject.toDetailedModel(
     location = locationName,
     avatarUrl = image,
     episodes = idsToEpisodesConverter(episodesIds)
+)
+
+
+internal fun CharacterResponse.toDBObject() = CharacterObject(
+    id = id,
+    name = name,
+    status = status,
+    species = species,
+    type = type,
+    gender = gender,
+    originName = origin.name,
+    originId = tryOrNull { origin.url.split("/").last().toInt() } ?: -1,
+    locationName = location.name,
+    locationId = tryOrNull { location.url.split("/").last().toInt() } ?: -1,
+    image = image,
+    episodesIds = episode.extractIdsFromUrls(),
+    created = created
 )
 
 internal fun CharacterObject.toModel() = Character(
