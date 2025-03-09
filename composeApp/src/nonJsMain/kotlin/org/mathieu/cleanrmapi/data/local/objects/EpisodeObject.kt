@@ -3,9 +3,7 @@ package org.mathieu.cleanrmapi.data.local.objects
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.mathieu.cleanrmapi.data.validators.annotations.MustBeCommaSeparatedIds
-import org.mathieu.cleanrmapi.data.extensions.extractIdsFromUrls
 import org.mathieu.cleanrmapi.data.local.RMDatabase
-import org.mathieu.cleanrmapi.data.remote.responses.EpisodeResponse
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
 
 /**
@@ -30,16 +28,6 @@ class EpisodeObject(
     @MustBeCommaSeparatedIds
     val charactersIds: String,
     val created: String
-)
-
-internal fun EpisodeResponse.toDBObject() = EpisodeObject(
-    id = id,
-    name = name,
-    airDate = air_date,
-    episode = episode,
-    charactersIds = characters.extractIdsFromUrls(),
-    created = created
-
 )
 
 internal fun EpisodeObject.toModel() = Episode(

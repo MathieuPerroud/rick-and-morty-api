@@ -9,16 +9,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.mathieu.cleanrmapi.common.extensions.mapElement
-import org.mathieu.cleanrmapi.common.extensions.toList
+import org.mathieu.cleanrmapi.common.mapElement
+import org.mathieu.cleanrmapi.common.toList
 import org.mathieu.cleanrmapi.data.local.CharacterDAO
 import org.mathieu.cleanrmapi.data.local.objects.CharacterObject
 import org.mathieu.cleanrmapi.data.local.objects.toDetailedModel
 import org.mathieu.cleanrmapi.data.local.objects.toModel
-import org.mathieu.cleanrmapi.data.local.objects.toDBObject
 import org.mathieu.cleanrmapi.data.remote.CharacterApi
 import org.mathieu.cleanrmapi.data.remote.EpisodeApi
 import org.mathieu.cleanrmapi.data.remote.responses.CharacterResponse
+import org.mathieu.cleanrmapi.data.remote.responses.toDBObject
 import org.mathieu.cleanrmapi.data.validators.annotations.MustBeCommaSeparatedIds
 import org.mathieu.cleanrmapi.domain.character.models.Character
 import org.mathieu.cleanrmapi.domain.character.models.CharacterDetails
@@ -127,11 +127,6 @@ internal class CharacterRepositoryImpl(
 
 }
 
-fun <T> tryOrNull(block: () -> T) = try {
-    block()
-} catch (_: Exception) {
-    null
-}
 /**
  * Orchestrates the retrieval of a CharacterObject by attempting to fetch it locally first,
  * then remotely if it's not found in the local storage.

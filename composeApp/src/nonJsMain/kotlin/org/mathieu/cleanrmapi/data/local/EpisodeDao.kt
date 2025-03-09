@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-import org.mathieu.cleanrmapi.data.local.objects.CharacterObject
 import org.mathieu.cleanrmapi.data.local.objects.EpisodeObject
 
 @Dao

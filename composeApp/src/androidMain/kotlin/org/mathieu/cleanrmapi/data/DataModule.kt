@@ -1,12 +1,12 @@
 package org.mathieu.cleanrmapi.data
 
-import android.app.Application
-import androidx.room.Room
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
 import org.mathieu.cleanrmapi.data.local.CharacterDAO
 import org.mathieu.cleanrmapi.data.local.EpisodeDAO
 import org.mathieu.cleanrmapi.data.local.RMDatabase
+import org.mathieu.cleanrmapi.data.local.getDatabaseBuilder
+import org.mathieu.cleanrmapi.data.local.getRoomDatabase
 import org.mathieu.cleanrmapi.data.remote.CharacterApi
 import org.mathieu.cleanrmapi.data.remote.EpisodeApi
 import org.mathieu.cleanrmapi.data.remote.createHttpClient
@@ -18,13 +18,6 @@ import org.mathieu.cleanrmapi.domain.episode.EpisodeRepository
 //https://rickandmortyapi.com/documentation/#rest
 private const val RMAPI_URL = "https://rickandmortyapi.com/api/"
 
-private fun provideDataBase(application: Application): RMDatabase =
-    Room.databaseBuilder(
-        application,
-        RMDatabase::class.java,
-        "rick_and_morty_database"
-    ).
-    fallbackToDestructiveMigration().build()
 
 val dataModule = module {
 
@@ -34,7 +27,11 @@ val dataModule = module {
         )
     }
 
-    single { provideDataBase(get()) }
+    single<RMDatabase> {
+        getRoomDatabase(
+            getDatabaseBuilder(get())
+        )
+    }
 
 
     single<CharacterDAO> {
