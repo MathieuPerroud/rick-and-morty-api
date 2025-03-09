@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     kotlin("plugin.serialization")
 }
 kotlin {
@@ -52,15 +53,40 @@ kotlin {
         }
         binaries.executable()
     }
-    
+
+
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    applyDefaultHierarchyTemplate {
+
+        common {
+            group("nonJs") {
+                withAndroidTarget()
+                withJvm()
+                group("ios") {
+                    withIos()
+                }
+            }
+        }
+    }
+
+
     sourceSets {
         val desktopMain by getting
-        
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
+
+        all{
+            languageSettings {
+                @OptIn(ExperimentalKotlinGradlePluginApi::class)
+                compilerOptions{
+                    freeCompilerArgs.add("-Xexpect-actual-classes")
+                }
+            }
         }
+
         commonMain.dependencies {
+//            api(project(":domain"))
+
+//            implementation(libs.ktor.client.logging)
+//            implementation(libs.ktor.client.content.negotiation)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
@@ -69,12 +95,54 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+            //JetBrains
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+
+            // koin
+            implementation(project.dependencies.platform(libs.koin.bom))
+            implementation(libs.koin.core)
+
         }
+
+        val nonJsMain by getting {
+            dependencies {
+                //room
+                implementation(libs.room.runtime)
+                implementation(libs.sqlite.bundled)
+            }
+        }
+
+        androidMain.dependencies {
+//            implementation(libs.ktor.client.android)
+//            implementation(libs.ktor.client.okhttp)
+//
+//            implementation(libs.paging.room)
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.androidx.compose)
+            implementation(libs.koin.android)
+            //Koin
+            implementation( "io.insert-koin:koin-androidx-compose:3.5.6")
+            implementation("io.insert-koin:koin-android:3.5.6")
+        }
+
+        iosMain.dependencies {
+//            implementation(libs.ktor.client.darwin)
+        }
+
         desktopMain.dependencies {
+            //implementation(libs.ktor.client.okhttp)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
+
+        wasmJsMain.dependencies {
+//            implementation(libs.ktor.client.js)
+        }
     }
+
 }
 
 
@@ -146,6 +214,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.datastore:datastore-preferences:1.1.3")
     implementation("androidx.datastore:datastore:1.1.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
 
     //Compose
     implementation("androidx.activity:activity-compose:1.10.1")
@@ -163,36 +232,18 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.6.0")
 
 
-    //Koin
-    implementation( "io.insert-koin:koin-androidx-compose:3.5.6")
-    implementation("io.insert-koin:koin-android:3.5.6")
-
     //Ktor
     implementation("io.ktor:ktor-client-core:2.3.4")
     implementation("io.ktor:ktor-client-cio:2.3.4")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.4")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
 
-    //JetBrains
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
 
-    val room_version = "2.7.0-alpha01"
-
-    implementation("androidx.room:room-runtime:$room_version")
-
-    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
-    // See Add the KSP plugin to your project
-    add("ksp","androidx.room:room-compiler:$room_version")
-
-    // If this project only uses Java source, use the Java annotationProcessor
-    // No additional plugins are necessary
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$room_version")
-
+    // KSP support for Room Compiler.
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
     //Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
@@ -202,4 +253,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     debugImplementation(compose.uiTooling)
 
+}
+
+// set schema..
+room {
+    schemaDirectory("$projectDir/schemas")
 }
