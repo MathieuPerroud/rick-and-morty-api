@@ -2,7 +2,6 @@ package org.mathieu.cleanrmapi.data.remote
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpCallValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -15,9 +14,11 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.*
 
+expect val engine: HttpClientEngine
+
 fun createHttpClient(
     baseUrl: String,
-    engine: HttpClientEngine = CIO.create()
+    engine: HttpClientEngine = org.mathieu.cleanrmapi.data.remote.engine
 ): HttpClient = HttpClient(engine) {
     defaultRequest { url(baseUrl) }
 
