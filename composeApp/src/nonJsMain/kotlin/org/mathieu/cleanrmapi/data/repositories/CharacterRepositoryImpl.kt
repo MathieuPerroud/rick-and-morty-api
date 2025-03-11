@@ -53,7 +53,7 @@ internal class CharacterRepositoryImpl(
      */
     private suspend fun fetchNext() {
 
-        val page: Int? = dataStore.retrieveFrom(nextPage)
+        val page: Int? = dataStore.retrieveFromInt(nextPage)
 
         if (page != -1) {
 
