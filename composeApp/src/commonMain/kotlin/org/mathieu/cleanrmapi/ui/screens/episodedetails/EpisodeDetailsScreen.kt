@@ -40,7 +40,7 @@ fun EpisodeDetailsScreen(
 ) {
 
     Screen(
-        viewModel = viewModel<EpisodeDetailsViewModel>(),
+        viewModel = viewModel { EpisodeDetailsViewModel() },
         navController = navController
     ) { state, viewModel ->
 

@@ -36,7 +36,7 @@ import org.mathieu.cleanrmapi.ui.screens.characters.CharactersContracts.*
 fun CharactersScreen(navController: NavController) {
 
     Screen(
-        viewModel = viewModel<CharactersViewModel>(),
+        viewModel = viewModel { CharactersViewModel() },
         navController = navController
     ) { state, viewModel ->
 

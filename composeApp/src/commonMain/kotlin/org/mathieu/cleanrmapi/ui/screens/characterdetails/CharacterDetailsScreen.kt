@@ -64,9 +64,8 @@ fun CharacterDetailsScreen(
     navController: NavController,
     id: Int
 ) {
-
     Screen(
-        viewModel = viewModel<CharacterDetailsViewModel>(),
+        viewModel = viewModel { CharacterDetailsViewModel() },
         navController = navController
     ) { state, viewModel ->
 
