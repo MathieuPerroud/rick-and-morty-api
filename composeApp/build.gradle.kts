@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.room)
     kotlin("plugin.serialization")
 }
+
 kotlin {
     androidTarget {
         compilerOptions {
@@ -31,53 +32,8 @@ kotlin {
             isStatic = true
         }
     }
-    
-    jvm("desktop")
-    
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        moduleName = "composeApp"
-        browser {
-            val rootDirPath = project.rootDir.path
-            val projectDirPath = project.projectDir.path
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(rootDirPath)
-                        add(projectDirPath)
-                    }
-                }
-            }
-        }
-        binaries.executable()
-    }
-
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    applyDefaultHierarchyTemplate {
-
-        common {
-            group("nonJs") {
-
-                group("mobile") {
-                    withAndroidTarget()
-                    group("ios") {
-                        withIos()
-                    }
-                }
-
-                withJvm()
-            }
-        }
-
-    }
-
 
     sourceSets {
-
-        val desktopMain by getting
 
         all {
             languageSettings {
@@ -104,49 +60,34 @@ kotlin {
 
             kotlinx()
 
+            room()
+
             koin(platform = Platform.Common)
 
             ktor(platform = Platform.Common)
 
         }
 
-        // Dependencies for every platforms but wasmJs
-        val nonJsMain by getting {
-            dependencies {
-                //room
-                implementation(libs.room.runtime)
-                implementation(libs.sqlite.bundled)
-            }
-        }
-
-        // Dependencies for iOS and Android only
-        val mobileMain by getting {
-            dependencies {
-                datastore()
-            }
-        }
-
         // Specific platforms
         androidMain.dependencies {
-            ktor(platform = Platform.Android)
+
+
+            datastore()
+
             koin(platform = Platform.Android)
+
+            ktor(platform = Platform.Android)
+
         }
 
         iosMain.dependencies {
+
+//            room()
+
+            datastore()
+
             ktor(platform = Platform.Ios)
-        }
 
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-
-            koin(platform = Platform.Desktop)
-            ktor(platform = Platform.Desktop)
-
-        }
-
-        wasmJsMain.dependencies {
-            ktor(platform = Platform.WasmJs)
         }
 
     }
@@ -159,18 +100,6 @@ kotlin {
 
 }
 
-
-compose.desktop {
-    application {
-        mainClass = "org.mathieu.cleanrmapi.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.mathieu.cleanrmapi"
-            packageVersion = "1.0.0"
-        }
-    }
-}
 
 android {
     namespace = "org.mathieu.cleanrmapi"
@@ -221,7 +150,6 @@ dependencies {
     // KSP support for Room Compiler.
     listOf(
         "kspAndroid",
-        "kspDesktop",
         "kspIosSimulatorArm64",
         "kspIosX64",
         "kspIosArm64",
@@ -240,7 +168,7 @@ room {
 }
 
 private enum class Platform {
-    Common, Ios, Android, Desktop, WasmJs
+    Common, Ios, Android
 }
 
 private fun KotlinDependencyHandler.ktor(
@@ -253,12 +181,6 @@ private fun KotlinDependencyHandler.ktor(
             implementation(libs.ktor.client.android)
             implementation(libs.ktor.client.okhttp)
         }
-        Platform.Desktop -> {
-            implementation(libs.ktor.client.java)
-            implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.ktor.client.okhttp)
-        }
-        Platform.WasmJs -> implementation(libs.ktor.client.js)
         Platform.Common -> {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.negotiation)
@@ -283,6 +205,12 @@ private fun KotlinDependencyHandler.kotlinx() {
     implementation(libs.jetbrains.kotlinx.coroutines.core)
     implementation(libs.jetbrains.kotlinx.serialization.json)
 }
+
+private fun KotlinDependencyHandler.room() {
+    implementation(libs.room.runtime)
+    implementation(libs.sqlite.bundled)
+}
+
 private fun KotlinDependencyHandler.datastore() {
     implementation(libs.datastore.preferences)
     implementation(libs.datastore)
