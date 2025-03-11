@@ -20,7 +20,7 @@ actual val databaseBuilderModule: Module
 
 actual val dataStoreModule = module {
 
-    single<DataStore> { DataStoreImpl() }
+    single<DataStore> { DataStoreImpl(get()) }
 
 }
 
