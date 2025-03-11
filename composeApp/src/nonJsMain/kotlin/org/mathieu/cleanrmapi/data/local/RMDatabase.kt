@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import org.mathieu.cleanrmapi.data.local.objects.CharacterObject
 import org.mathieu.cleanrmapi.data.local.objects.EpisodeObject
 
@@ -17,6 +18,7 @@ import org.mathieu.cleanrmapi.data.local.objects.EpisodeObject
     version = 1,
     exportSchema = false
 )
+
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class RMDatabase: RoomDatabase() {
 
@@ -31,18 +33,16 @@ abstract class RMDatabase: RoomDatabase() {
 }
 
 // The Room compiler generates the `actual` implementations.
-@Suppress("NO_ACTUAL_FOR_EXPECT", "EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+@Suppress("NO_ACTUAL_FOR_EXPECT")
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<RMDatabase> {
     override fun initialize(): RMDatabase
 }
 
 fun getRoomDatabase(
     builder: RoomDatabase.Builder<RMDatabase>
-): RMDatabase {
-    return builder
-        .addMigrations()
-        .fallbackToDestructiveMigrationOnDowngrade(true)
-        .setDriver(BundledSQLiteDriver())
-//        .setQueryCoroutineContext(Dispatchers.IO)
-        .build()
-}
+): RMDatabase = builder
+    .addMigrations()
+    .fallbackToDestructiveMigrationOnDowngrade(true)
+    .setDriver(BundledSQLiteDriver())
+    .setQueryCoroutineContext(Dispatchers.IO)
+    .build()
