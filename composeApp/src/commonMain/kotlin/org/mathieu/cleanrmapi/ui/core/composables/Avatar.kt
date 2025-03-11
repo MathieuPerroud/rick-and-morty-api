@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import coil3.ImageLoader
-import coil3.PlatformContext
+import coil3.compose.LocalPlatformContext
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -13,14 +13,14 @@ import org.mathieu.cleanrmapi.ui.core.extensions.koinInject
 
 @Composable
 fun Avatar(
-//    imageLoader: ImageLoader = koinInject(valueForPreview = ImageLoader(PlatformContext.Companion.INSTANCE)),
+//    imageLoader: ImageLoader = /*koinInject(valueForPreview =*/ ImageLoader(LocalPlatformContext.current/*)*/),
     contentScale: ContentScale = ContentScale.Crop,
     url: String
 ) {
 
-//    val context: PlatformContext = TODO: Here
+//    val context = LocalPlatformContext.current
 //
-//    val imageRequest = ImageRequest.Builder()
+//    val imageRequest = ImageRequest.Builder(context)
 //        .data(url)
 //        .crossfade(true)
 //        .build()
