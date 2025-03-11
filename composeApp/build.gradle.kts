@@ -71,6 +71,7 @@ kotlin {
                 withJvm()
             }
         }
+
     }
 
 
@@ -97,13 +98,13 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.compose.navigation)
             implementation(compose.materialIconsExtended)
-            implementation(compose.preview)
+            implementation(libs.lifecycle.viewmodel.compose)
 
             coil()
 
             kotlinx()
 
-            koin()
+            koin(platform = Platform.Common)
 
             ktor(platform = Platform.Common)
 
@@ -128,6 +129,7 @@ kotlin {
         // Specific platforms
         androidMain.dependencies {
             ktor(platform = Platform.Android)
+            koin(platform = Platform.Android)
         }
 
         iosMain.dependencies {
@@ -138,6 +140,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
 
+            koin(platform = Platform.Desktop)
             ktor(platform = Platform.Desktop)
 
         }
@@ -146,6 +149,12 @@ kotlin {
             ktor(platform = Platform.WasmJs)
         }
 
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        if (name.contains("ios")) {
+            compilerOptions.freeCompilerArgs.add("-Xskip-metadata-version-check")
+        }
     }
 
 }
@@ -210,16 +219,25 @@ android {
 dependencies {
 
     // KSP support for Room Compiler.
-    add("kspAndroid", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
-    add("kspIosX64", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)
+    listOf(
+        "kspAndroid",
+        "kspDesktop",
+        "kspIosSimulatorArm64",
+        "kspIosX64",
+        "kspIosArm64",
+        "kspCommonMainMetadata",
+    ).forEach {
+        add(it, libs.room.compiler)
+    }
 
     //Testing
     debugImplementation(compose.uiTooling)
 
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
 
 private enum class Platform {
     Common, Ios, Android, Desktop, WasmJs
@@ -230,22 +248,34 @@ private fun KotlinDependencyHandler.ktor(
 ) {
     when (platform) {
         Platform.Ios -> implementation(libs.ktor.client.darwin)
-        Platform.Android -> implementation(libs.ktor.client.okhttp)
-        Platform.Desktop -> implementation(libs.ktor.client.okhttp)
+        Platform.Android -> {
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.android)
+            implementation(libs.ktor.client.okhttp)
+        }
+        Platform.Desktop -> {
+            implementation(libs.ktor.client.java)
+            implementation(libs.kotlinx.coroutines.swing)
+            implementation(libs.ktor.client.okhttp)
+        }
         Platform.WasmJs -> implementation(libs.ktor.client.js)
         Platform.Common -> {
             implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.cio)
             implementation(libs.ktor.negotiation)
             implementation(libs.ktor.json)
         }
     }
 }
 
-private fun KotlinDependencyHandler.koin() {
+private fun KotlinDependencyHandler.koin(
+    platform: Platform
+) {
     implementation(project.dependencies.platform(libs.koin.bom))
-    implementation(libs.koin.androidx.compose)
-    implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+
+    if (platform == Platform.Android) {
+        implementation(libs.koin.android)
+    }
     implementation(libs.koin.core)
 }
 
@@ -259,10 +289,6 @@ private fun KotlinDependencyHandler.datastore() {
 }
 
 private fun KotlinDependencyHandler.coil() {
-    implementation(libs.coil.network)
     implementation(libs.coil.compose)
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
+    implementation(libs.coil.network.ktor)
 }
