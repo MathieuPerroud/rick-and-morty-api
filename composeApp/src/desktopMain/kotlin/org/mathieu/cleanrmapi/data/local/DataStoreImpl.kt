@@ -3,7 +3,7 @@ package org.mathieu.cleanrmapi.data.local
 import java.util.prefs.Preferences
 
 class DataStoreImpl : DataStore {
-    private val prefs: Preferences = Preferences.userRoot().node("com.myapp.preferences")
+    private val prefs: Preferences = Preferences.userRoot().node("org.mathieu.cleanrmapi.data.local.preferences")
 
     override suspend fun storeInto(key: String, data: Int?) {
         if (data == null) prefs.remove(key)

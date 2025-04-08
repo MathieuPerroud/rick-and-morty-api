@@ -16,24 +16,12 @@ import org.mathieu.cleanrmapi.ui.core.navigate
 fun <State, VM: ViewModel<State>> Screen(
     viewModel: VM,
     navController: NavController,
-    onBack: ((state: State, viewModel: VM) -> Unit)? = null,
     onEvent: (state: State, viewModel: VM, event: Any) -> Unit = { _, _, _ ->  },
     content: @Composable (state: State, viewModel: VM) -> Unit
 ) {
 
     // Observing the state from the view model.
     val state by viewModel.state.collectAsState()
-
-    val focusManager = LocalFocusManager.current
-
-    // Handle back press event.
-//    if (onBack != null) TODO: Here
-//        BackHandler(
-//            onBack = {
-//                focusManager.clearFocus()
-//                onBack(state, viewModel)
-//            }
-//        )
 
     // Collect events emitted by the ViewModel.
     LaunchedEffect(viewModel) {

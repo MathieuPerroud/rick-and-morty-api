@@ -15,65 +15,14 @@ plugins {
     kotlin("plugin.serialization")
 }
 kotlin {
+    
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_1_8)
         }
     }
-    
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            isStatic = true
-        }
-    }
-    
+
     jvm("desktop")
-    
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        moduleName = "composeApp"
-        browser {
-            val rootDirPath = project.rootDir.path
-            val projectDirPath = project.projectDir.path
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-                    static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
-                        add(rootDirPath)
-                        add(projectDirPath)
-                    }
-                }
-            }
-        }
-        binaries.executable()
-    }
-
-
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    applyDefaultHierarchyTemplate {
-
-        common {
-            group("nonJs") {
-
-                group("mobile") {
-                    withAndroidTarget()
-                    group("ios") {
-                        withIos()
-                    }
-                }
-
-                withJvm()
-            }
-        }
-
-    }
-
 
     sourceSets {
 
@@ -108,32 +57,15 @@ kotlin {
 
             ktor(platform = Platform.Common)
 
-        }
-
-        // Dependencies for every platforms but wasmJs
-        val nonJsMain by getting {
-            dependencies {
-                //room
-                implementation(libs.room.runtime)
-                implementation(libs.sqlite.bundled)
-            }
-        }
-
-        // Dependencies for iOS and Android only
-        val mobileMain by getting {
-            dependencies {
-                datastore()
-            }
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
 
         // Specific platforms
         androidMain.dependencies {
             ktor(platform = Platform.Android)
             koin(platform = Platform.Android)
-        }
-
-        iosMain.dependencies {
-            ktor(platform = Platform.Ios)
+            datastore()
         }
 
         desktopMain.dependencies {
@@ -145,16 +77,6 @@ kotlin {
 
         }
 
-        wasmJsMain.dependencies {
-            ktor(platform = Platform.WasmJs)
-        }
-
-    }
-
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        if (name.contains("ios")) {
-            compilerOptions.freeCompilerArgs.add("-Xskip-metadata-version-check")
-        }
     }
 
 }
@@ -222,9 +144,6 @@ dependencies {
     listOf(
         "kspAndroid",
         "kspDesktop",
-        "kspIosSimulatorArm64",
-        "kspIosX64",
-        "kspIosArm64",
         "kspCommonMainMetadata",
     ).forEach {
         add(it, libs.room.compiler)
@@ -240,14 +159,13 @@ room {
 }
 
 private enum class Platform {
-    Common, Ios, Android, Desktop, WasmJs
+    Common, Android, Desktop
 }
 
 private fun KotlinDependencyHandler.ktor(
     platform: Platform
 ) {
     when (platform) {
-        Platform.Ios -> implementation(libs.ktor.client.darwin)
         Platform.Android -> {
             implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.android)
@@ -258,7 +176,6 @@ private fun KotlinDependencyHandler.ktor(
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.okhttp)
         }
-        Platform.WasmJs -> implementation(libs.ktor.client.js)
         Platform.Common -> {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.negotiation)
