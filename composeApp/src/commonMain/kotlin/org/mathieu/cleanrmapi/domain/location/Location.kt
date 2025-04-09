@@ -19,3 +19,15 @@ data class Location(
     val dimension: String,
     val residents: List<Character>
 )
+
+
+/**
+ * Lightweight representation of a location.
+ *
+ * @property id Unique identifier for the location.
+ * @property name Name of the location.
+ */
+data class LocationPreview(
+    val id: Int,
+    val name: String
+)

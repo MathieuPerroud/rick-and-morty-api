@@ -9,7 +9,6 @@ import org.mathieu.cleanrmapi.data.local.objects.EpisodeObject
 
 @Dao
 interface EpisodeDAO {
-
     @Query("select * from ${RMDatabase.EPISODE_TABLE}")
     fun getEpisodes(): Flow<List<EpisodeObject>>
 
