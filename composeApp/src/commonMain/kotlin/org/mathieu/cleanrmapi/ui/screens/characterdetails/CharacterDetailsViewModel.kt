@@ -5,6 +5,7 @@ import org.mathieu.cleanrmapi.domain.character.CharacterRepository
 import org.mathieu.cleanrmapi.domain.character.models.CharacterGender
 import org.mathieu.cleanrmapi.domain.character.models.CharacterStatus
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
+import org.mathieu.cleanrmapi.domain.location.LocationPreview
 import org.mathieu.cleanrmapi.ui.core.Destination
 import org.mathieu.cleanrmapi.ui.core.ViewModel
 
@@ -70,8 +71,8 @@ sealed interface CharacterDetailsState {
         val episodes: List<Episode>,
         val status: CharacterStatus,
         val gender: CharacterGender,
-        val origin: String,
-        val location: String,
+        val origin: LocationPreview,
+        val location: LocationPreview,
     ) : CharacterDetailsState
 
 }

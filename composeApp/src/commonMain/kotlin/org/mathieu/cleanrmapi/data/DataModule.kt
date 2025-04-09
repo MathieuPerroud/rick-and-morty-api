@@ -10,6 +10,7 @@ import org.mathieu.cleanrmapi.data.local.RMDatabase
 import org.mathieu.cleanrmapi.data.local.getRoomDatabase
 import org.mathieu.cleanrmapi.data.remote.CharacterApi
 import org.mathieu.cleanrmapi.data.remote.EpisodeApi
+import org.mathieu.cleanrmapi.data.remote.LocationApi
 import org.mathieu.cleanrmapi.data.remote.createHttpClient
 import org.mathieu.cleanrmapi.data.repositories.CharacterRepositoryImpl
 import org.mathieu.cleanrmapi.data.repositories.EpisodeRepositoryImpl
@@ -33,6 +34,7 @@ val remoteModule = module {
     }
     single { CharacterApi(get()) }
     single { EpisodeApi(get()) }
+    single { LocationApi(get()) }
 }
 
 val repositoriesModule = module {

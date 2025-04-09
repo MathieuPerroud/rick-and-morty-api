@@ -1,10 +1,12 @@
 package org.mathieu.cleanrmapi.data.local
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import org.mathieu.cleanrmapi.data.local.objects.LocationObject
 
+@Dao
 interface LocationDAO {
 
     @Query("select * from ${RMDatabase.LOCATION_TABLE} where id = :id")

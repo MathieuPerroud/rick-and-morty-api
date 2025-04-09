@@ -8,6 +8,8 @@ import org.mathieu.cleanrmapi.data.local.objects.toDBObject
 import org.mathieu.cleanrmapi.data.local.objects.toModel
 import org.mathieu.cleanrmapi.data.local.objects.toPreviewModel
 import org.mathieu.cleanrmapi.data.remote.CharacterApi
+import org.mathieu.cleanrmapi.data.remote.LocationApi
+import org.mathieu.cleanrmapi.data.remote.responses.toDBObject
 import org.mathieu.cleanrmapi.domain.location.Location
 import org.mathieu.cleanrmapi.domain.location.LocationRepository
 import org.mathieu.cleanrmapi.domain.location.LocationPreview
@@ -51,7 +53,7 @@ private object GetLocationObjectIfExists : KoinComponent {
 
     private suspend fun tryToGetLocationLocally(id: Int) = locationLocal.getLocation(id)
 
-    private fun LocationObject?.fetchRemotelyIfNotFound(id: Int): LocationObject? {
+    private suspend fun LocationObject?.fetchRemotelyIfNotFound(id: Int): LocationObject? {
         if (this != null) return this
 
         return locationApi.getLocation(id = id)

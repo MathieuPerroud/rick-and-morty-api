@@ -20,6 +20,7 @@ ktor = "3.1.1"
 ksp = "2.1.10-1.0.31"
 sqlite = "2.5.0-SNAPSHOT"
 navigationCompose = "2.8.0-alpha10"
+firebaseCrashlyticsBuildtools = "3.0.3"
 
 [libraries]
 
@@ -61,6 +62,7 @@ ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-java = { group = "io.ktor", name = "ktor-client-java", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
