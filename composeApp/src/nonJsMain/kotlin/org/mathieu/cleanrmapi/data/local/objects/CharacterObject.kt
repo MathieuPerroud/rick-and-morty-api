@@ -12,6 +12,8 @@ import org.mathieu.cleanrmapi.domain.character.models.CharacterDetails
 import org.mathieu.cleanrmapi.domain.character.models.CharacterGender
 import org.mathieu.cleanrmapi.domain.character.models.CharacterStatus
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
+import org.mathieu.cleanrmapi.domain.location.Location
+import org.mathieu.cleanrmapi.domain.location.LocationPreview
 
 /**
  * Represents a character entity stored in the SQLite database. This object provides fields
@@ -59,8 +61,14 @@ internal suspend fun CharacterObject.toDetailedModel(
     species = species,
     type = type,
     gender = tryOrNull { CharacterGender.valueOf(gender) } ?: CharacterGender.Unknown,
-    origin = originName,
-    location = locationName,
+    origin = LocationPreview(
+        originId,
+        originName
+    ),
+    location = LocationPreview(
+        locationId,
+        locationName
+    ),
     avatarUrl = image,
     episodes = idsToEpisodesConverter(episodesIds)
 )
