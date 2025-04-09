@@ -1,5 +1,6 @@
 package org.mathieu.cleanrmapi.ui.screens.episodedetails
 
+import CharacterCard
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -27,7 +28,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.mathieu.cleanrmapi.ui.core.composables.BackArrow
-import org.mathieu.cleanrmapi.ui.core.composables.CharacterCard
 import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
 import org.mathieu.cleanrmapi.ui.core.composables.Screen
 import org.mathieu.cleanrmapi.ui.core.theme.PrimaryColor
@@ -124,8 +124,6 @@ private object CharacterDetailsContent {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2)
             ) {
-
-
 
                 items(state.characters) { character ->
 

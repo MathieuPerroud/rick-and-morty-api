@@ -1,7 +1,7 @@
 package org.mathieu.cleanrmapi.domain.character.models
 
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
-import org.mathieu.cleanrmapi.domain.location.LocationPreview
+import org.mathieu.cleanrmapi.domain.location.models.LocationPreview
 
 /**
  * Represents a detailed description of a Rick&Morty character.

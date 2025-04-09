@@ -12,8 +12,7 @@ import org.mathieu.cleanrmapi.domain.character.models.CharacterDetails
 import org.mathieu.cleanrmapi.domain.character.models.CharacterGender
 import org.mathieu.cleanrmapi.domain.character.models.CharacterStatus
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
-import org.mathieu.cleanrmapi.domain.location.Location
-import org.mathieu.cleanrmapi.domain.location.LocationPreview
+import org.mathieu.cleanrmapi.domain.location.models.LocationPreview
 
 /**
  * Represents a character entity stored in the SQLite database. This object provides fields

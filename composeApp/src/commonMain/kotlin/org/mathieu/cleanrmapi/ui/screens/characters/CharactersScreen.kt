@@ -1,5 +1,6 @@
 package org.mathieu.cleanrmapi.ui.screens.characters
 
+import CharacterCard
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,7 +26,6 @@ import cleanrmapiudf.composeapp.generated.resources.Res
 import cleanrmapiudf.composeapp.generated.resources.characters
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.mathieu.cleanrmapi.ui.core.composables.CharacterCard
 import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
 import org.mathieu.cleanrmapi.ui.core.composables.Screen
 import org.mathieu.cleanrmapi.ui.core.theme.OnPrimaryColor
@@ -95,7 +95,8 @@ private fun Content(
                         modifier = Modifier
                             .clickable {
                                 SelectedCharacter(character).handleAction()
-                            },
+                            }
+                            .padding(8.dp),
                         character = character
                     )
 

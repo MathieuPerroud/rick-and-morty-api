@@ -17,7 +17,7 @@ import org.mathieu.cleanrmapi.data.local.objects.LocationObject
         EpisodeObject::class,
         LocationObject::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 
