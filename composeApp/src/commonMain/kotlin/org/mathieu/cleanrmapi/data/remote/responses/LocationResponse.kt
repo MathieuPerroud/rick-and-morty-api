@@ -1,6 +1,7 @@
 package org.mathieu.cleanrmapi.data.remote.responses
 
 import kotlinx.serialization.Serializable
+import org.mathieu.cleanrmapi.data.local.objects.LocationObject
 
 /**
  * Represents detailed information about a location, typically received from an API response.
@@ -14,7 +15,7 @@ import kotlinx.serialization.Serializable
  * @property created The timestamp indicating when the location was added to the database.
  */
 @Serializable
-internal data class LocationResponse(
+data class LocationResponse(
     val id: Int,
     val name: String,
     val type: String,
@@ -23,3 +24,13 @@ internal data class LocationResponse(
     val url: String,
     val created: String,
 )
+
+fun LocationResponse.toDBObject(): LocationObject {
+    return LocationObject(
+        id = this.id,
+        name = this.name,
+        type = this.type,
+        dimension = this.dimension,
+        residentsIds = this.residents.joinToString(",")
+    )
+}

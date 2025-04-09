@@ -1,6 +1,7 @@
 package org.mathieu.cleanrmapi.domain.character.models
 
 import org.mathieu.cleanrmapi.domain.episode.models.Episode
+import org.mathieu.cleanrmapi.domain.location.LocationPreview
 
 /**
  * Represents a detailed description of a Rick&Morty character.
@@ -24,8 +25,8 @@ data class CharacterDetails(
     val species: String,
     val type: String,
     val gender: CharacterGender,
-    val origin: String,
-    val location: String,
+    val origin: LocationPreview,
+    val location: LocationPreview,
     val avatarUrl: String
 )
 
