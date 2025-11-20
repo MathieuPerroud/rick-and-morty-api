@@ -47,9 +47,14 @@ private fun MainContent() {
             arguments = listOf(navArgument("characterId") { type = NavType.IntType })
         ) { backStackEntry ->
 
+            val id = backStackEntry.arguments?.getInt("characterId") ?: run {
+                navController.popBackStack()
+                return@composable
+            }
+
             CharacterDetailsScreen(
                 navController = navController,
-                id = backStackEntry.arguments?.getInt("characterId") ?: -1
+                id = id
             )
 
         }
@@ -57,3 +62,5 @@ private fun MainContent() {
     }
 
 }
+
+data class CharacterDetails(val characterId: Int)

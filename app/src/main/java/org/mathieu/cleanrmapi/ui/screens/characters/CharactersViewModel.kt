@@ -6,7 +6,10 @@ import org.mathieu.cleanrmapi.domain.models.character.Character
 import org.mathieu.cleanrmapi.domain.repositories.CharacterRepository
 import org.mathieu.cleanrmapi.ui.core.ViewModel
 
-class CharactersViewModel(application: Application) : ViewModel<CharactersState>(CharactersState(), application) {
+
+sealed interface UiEvent
+
+class CharactersViewModel(application: Application) : ViewModel<CharactersState, UiEvent>(CharactersState(), application) {
 
     private val characterRepository: CharacterRepository by inject()
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">@color/black</color>
+    <color name="on_background">@color/white</color>
+    <color name="text_color"/>
+    <color name="surface"/>
+    <color name="on_surface"/>
+    <color name="primary_color"/>
+    <color name="on_primary_color"/>
+    <color name="secondary_color"/>
+    <color name="on_secondary_color"/>
+
+</resources>
