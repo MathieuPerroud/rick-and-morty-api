@@ -1,7 +1,7 @@
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import org.mathieu.cleanrmapi.initKoin
-import org.mathieu.cleanrmapi.ui.App
+import dev.xnative.cleanrmapi.initKoin
+import dev.xnative.cleanrmapi.ui.App
 
 fun main() = application {
     Window(

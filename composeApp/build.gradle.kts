@@ -6,13 +6,13 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
-    kotlin("plugin.serialization")
+    kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
 kotlin {
     androidTarget {
@@ -36,7 +36,7 @@ kotlin {
     
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "composeApp"
+        outputModuleName.set("composeApp")
         browser {
             val rootDirPath = project.rootDir.path
             val projectDirPath = project.projectDir.path
@@ -44,7 +44,6 @@ kotlin {
                 outputFileName = "composeApp.js"
                 devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
                     static = (static ?: mutableListOf()).apply {
-                        // Serve sources to debug inside browser
                         add(rootDirPath)
                         add(projectDirPath)
                     }
@@ -89,25 +88,18 @@ kotlin {
 
         // Dependencies for every platforms
         commonMain.dependencies {
-            //Compose
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(libs.compose.navigation)
-            implementation(compose.materialIconsExtended)
+            implementation(project.dependencies.platform(libs.koin.bom))
+
+            implementation(libs.bundles.koin.common)
+            implementation(libs.bundles.kotlinx.common)
+            implementation(libs.bundles.ktor.common)
+            implementation(libs.bundles.coil.common)
+
+            implementation(libs.bundles.compose.common)
+            implementation(libs.compose.material.icons.extended)
+
             implementation(libs.lifecycle.viewmodel.compose)
-
-            coil()
-
-            kotlinx()
-
-            koin(platform = Platform.Common)
-
-            ktor(platform = Platform.Common)
-
+            
         }
 
         // Dependencies for every platforms but wasmJs
@@ -122,31 +114,30 @@ kotlin {
         // Dependencies for iOS and Android only
         val mobileMain by getting {
             dependencies {
-                datastore()
+                implementation(libs.bundles.datastore.common)
             }
         }
 
+
         // Specific platforms
         androidMain.dependencies {
-            ktor(platform = Platform.Android)
-            koin(platform = Platform.Android)
+            implementation(libs.bundles.ktor.android)
+            implementation(libs.bundles.koin.android)
         }
 
         iosMain.dependencies {
-            ktor(platform = Platform.Ios)
+            implementation(libs.bundles.ktor.ios)
         }
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-
-            koin(platform = Platform.Desktop)
-            ktor(platform = Platform.Desktop)
-
+            
+            implementation(libs.bundles.ktor.desktop)
         }
 
         wasmJsMain.dependencies {
-            ktor(platform = Platform.WasmJs)
+            implementation(libs.bundles.ktor.wasmjs)
         }
 
     }
@@ -162,22 +153,22 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "org.mathieu.cleanrmapi.MainKt"
+        mainClass = "dev.xnative.cleanrmapi.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.mathieu.cleanrmapi"
+            packageName = "dev.xnative.cleanrmapi"
             packageVersion = "1.0.0"
         }
     }
 }
 
 android {
-    namespace = "org.mathieu.cleanrmapi"
+    namespace = "dev.xnative.cleanrmapi"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.mathieu.cleanrmapi"
+        applicationId = "dev.xnative.cleanrmapi"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -230,65 +221,8 @@ dependencies {
         add(it, libs.room.compiler)
     }
 
-    //Testing
-    debugImplementation(compose.uiTooling)
-
 }
 
 room {
     schemaDirectory("$projectDir/schemas")
-}
-
-private enum class Platform {
-    Common, Ios, Android, Desktop, WasmJs
-}
-
-private fun KotlinDependencyHandler.ktor(
-    platform: Platform
-) {
-    when (platform) {
-        Platform.Ios -> implementation(libs.ktor.client.darwin)
-        Platform.Android -> {
-            implementation(libs.ktor.client.cio)
-            implementation(libs.ktor.client.android)
-            implementation(libs.ktor.client.okhttp)
-        }
-        Platform.Desktop -> {
-            implementation(libs.ktor.client.java)
-            implementation(libs.kotlinx.coroutines.swing)
-            implementation(libs.ktor.client.okhttp)
-        }
-        Platform.WasmJs -> implementation(libs.ktor.client.js)
-        Platform.Common -> {
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.negotiation)
-            implementation(libs.ktor.json)
-        }
-    }
-}
-
-private fun KotlinDependencyHandler.koin(
-    platform: Platform
-) {
-    implementation(project.dependencies.platform(libs.koin.bom))
-    implementation(libs.koin.compose)
-
-    if (platform == Platform.Android) {
-        implementation(libs.koin.android)
-    }
-    implementation(libs.koin.core)
-}
-
-private fun KotlinDependencyHandler.kotlinx() {
-    implementation(libs.jetbrains.kotlinx.coroutines.core)
-    implementation(libs.jetbrains.kotlinx.serialization.json)
-}
-private fun KotlinDependencyHandler.datastore() {
-    implementation(libs.datastore.preferences)
-    implementation(libs.datastore)
-}
-
-private fun KotlinDependencyHandler.coil() {
-    implementation(libs.coil.compose)
-    implementation(libs.coil.network.ktor)
 }
