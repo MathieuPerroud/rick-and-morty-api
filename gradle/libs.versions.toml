@@ -5,6 +5,8 @@ android-compileSdk = "36"
 android-minSdk = "28"
 android-targetSdk = "36"
 
+activity-compose = "1.12.2"
+androidx-browser = "1.9.0"
 coil = "3.3.0"
 compose-multiplatform = "1.10.1"
 datastore = "1.2.0"
@@ -22,6 +24,10 @@ sqlite = "2.6.2"
 ui-tooling = "1.10.3"
 
 [libraries]
+
+# AndroidX
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidx-browser" }
 
 # Jetbrains
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -73,11 +79,8 @@ compose-ui-preview-android = { group = "androidx.compose.ui", name = "ui-tooling
 compose-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-multiplatform" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
@@ -94,8 +97,7 @@ compose-common = [
     "compose-preview",
     "compose-material",
     "compose-runtime",
-    "compose-foundation",
-    "navigation3-ui"
+    "compose-foundation"
 ]
 
 datastore-common = [

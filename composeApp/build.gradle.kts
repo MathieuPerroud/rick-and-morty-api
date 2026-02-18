@@ -1,7 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
@@ -9,19 +9,17 @@ plugins {
     id("com.android.application")
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
     kotlin("plugin.serialization") version libs.versions.kotlin.get()
 }
+
 kotlin {
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8)
+            languageVersion.set(KotlinVersion.KOTLIN_2_3)
         }
     }
-    
+
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -30,9 +28,9 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     jvm("desktop")
-    
+
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         outputModuleName.set("composeApp")
@@ -89,56 +87,32 @@ kotlin {
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.koin.bom))
 
+            implementation(project(":core:app"))
+            implementation(project(":core:data"))
+            implementation(project(":core:domain"))
+
+
             implementation(libs.bundles.koin.common)
             implementation(libs.bundles.kotlinx.common)
-            implementation(libs.bundles.ktor.common)
+
             implementation(libs.bundles.coil.common)
 
             implementation(libs.bundles.compose.common)
             implementation(libs.compose.material.icons.extended)
 
             implementation(libs.lifecycle.viewmodel.compose)
-            
-        }
 
-        // Dependencies for every platforms but wasmJs
-        val nonJsMain by getting {
-            dependencies {
-                //room
-                implementation(libs.room.runtime)
-                implementation(libs.sqlite.bundled)
-            }
-        }
-
-        // Dependencies for iOS and Android only
-        val mobileMain by getting {
-            dependencies {
-                implementation(libs.bundles.datastore.common)
-            }
-        }
-
-
-        // Specific platforms
-        androidMain.dependencies {
-            implementation(libs.bundles.ktor.android)
-            implementation(libs.bundles.koin.android)
-        }
-
-        iosMain.dependencies {
-            implementation(libs.bundles.ktor.ios)
         }
 
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
-            implementation(libs.kotlinx.coroutines.swing)
-            
-            implementation(libs.bundles.ktor.desktop)
         }
 
-        wasmJsMain.dependencies {
-            implementation(libs.bundles.ktor.wasmjs)
-        }
 
+        androidMain.dependencies {
+            implementation(libs.compose.ui.preview.android)
+            implementation(libs.androidx.activity.compose)
+        }
     }
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -189,8 +163,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
@@ -204,24 +178,4 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-}
-
-dependencies {
-
-    // KSP support for Room Compiler.
-    listOf(
-        "kspAndroid",
-        "kspDesktop",
-        "kspIosSimulatorArm64",
-        "kspIosX64",
-        "kspIosArm64",
-        "kspCommonMainMetadata",
-    ).forEach {
-        add(it, libs.room.compiler)
-    }
-
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
 }
