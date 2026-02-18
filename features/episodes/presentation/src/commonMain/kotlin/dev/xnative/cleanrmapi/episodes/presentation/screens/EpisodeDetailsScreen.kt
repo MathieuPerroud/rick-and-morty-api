@@ -37,6 +37,21 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class EpisodeDetails(val episodeId: Int) : Destination() {
 
+    /**
+     * Displays the Episode Details screen for a selected episode and lists all related characters.
+     *
+     * Specific features:
+     * - Shows an episode header with air date, code, and name.
+     * - Displays episode characters in a two-column grid.
+     * - Keeps a back button available at the top of the screen.
+     *
+     * Error handling:
+     * - If episode data cannot be retrieved, an error message is displayed.
+     *
+     * User interaction:
+     * - The user can navigate back from the current episode.
+     * - The user can tap a character card to navigate to that character details screen.
+     */
     @Composable
     override fun Screen(router: Router) {
 

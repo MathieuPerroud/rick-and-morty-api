@@ -37,6 +37,21 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object CharactersList : Destination() {
 
+    /**
+     * Displays the Characters List screen as the main entry point for character browsing.
+     *
+     * Specific features:
+     * - Shows a two-column grid of character cards.
+     * - Triggers pagination when the user reaches the bottom of the currently loaded list.
+     * - Keeps a bottom bar title visible for quick screen identification.
+     *
+     * Error handling:
+     * - If loading fails, an error message is shown instead of the grid content.
+     *
+     * User interaction:
+     * - The user can open character details by tapping a character card.
+     * - Scrolling to the end of the grid requests the next page.
+     */
     @Composable
     override fun Screen(
         router: Router

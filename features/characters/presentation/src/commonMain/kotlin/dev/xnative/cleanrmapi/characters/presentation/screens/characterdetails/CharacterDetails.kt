@@ -64,6 +64,22 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CharacterDetails(val characterId: Int) : Destination() {
 
+    /**
+     * Displays the Character Details screen for a given character and exposes the list of episodes
+     * where this character appears.
+     *
+     * Specific features:
+     * - Shows a hero header with avatar, name, gender, status, and current location.
+     * - Adapts the header height while the episodes list scrolls.
+     * - Displays each related episode as a clickable card to open its details.
+     *
+     * Error handling:
+     * - If character data cannot be loaded, an error message is displayed in the center of the screen.
+     *
+     * User interaction:
+     * - The user can go back using the top-left back button.
+     * - The user can open an episode details screen by tapping an episode card.
+     */
     @Composable
     override fun Screen(
         router: Router
