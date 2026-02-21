@@ -11,15 +11,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-open class ViewModel<State>(initialState: State): androidx.lifecycle.ViewModel(),
+
+interface StateAwareViewModel<State> {
+    val state: StateFlow<State>
+    val events: Flow<Any>
+}
+
+
+open class ViewModel<State>(initialState: State): androidx.lifecycle.ViewModel(), StateAwareViewModel<State>,
     KoinComponent {
 
     private val _state = MutableStateFlow(initialState)
-    val state: StateFlow<State>
+    override val state: StateFlow<State>
         get() = _state
 
     private val _events = Channel<Any>(Channel.Factory.BUFFERED)
-    val events: Flow<Any>
+    override val events: Flow<Any>
         get() = _events.receiveAsFlow()
 
     /** This function is made as an extension because when we call it, it is yellow
@@ -74,4 +81,32 @@ open class ViewModel<State>(initialState: State): androidx.lifecycle.ViewModel()
 
     }
 
+}
+
+open class StoreViewModel<State, StateStore : Store<State>, Action : StoreAction<State, StateStore>>(
+    protected val store: StateStore
+) :
+    androidx.lifecycle.ViewModel(),
+    KoinComponent,
+    StateAwareViewModel<State> {
+
+    init {
+        this.addCloseable(store.storeScope)
+    }
+
+    override val state: StateFlow<State>
+        get() = store.state
+    override val events: Flow<Any>
+        get() = store.events
+
+    fun handleAction(action: Action): Unit = action.execute(from = store)
+
+}
+
+interface StoreAction<State, StateStore : Store<State>> : KoinComponent {
+    fun execute(from: StateStore) = with(this) {
+        from.reduce()
+    }
+
+    fun StateStore.reduce()
 }

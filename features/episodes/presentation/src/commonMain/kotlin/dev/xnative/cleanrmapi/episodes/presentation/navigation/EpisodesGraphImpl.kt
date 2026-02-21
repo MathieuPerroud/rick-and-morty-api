@@ -1,17 +1,18 @@
 package dev.xnative.cleanrmapi.episodes.presentation.navigation
 
+import androidx.navigation3.runtime.NavKey
 import dev.xnative.cleanrmapi.episodes.navigation.EpisodesGraph
-import dev.xnative.cleanrmapi.episodes.presentation.screens.EpisodeDetails
-import dev.xnative.cleanrmapi.navigation.Destination
+import dev.xnative.cleanrmapi.episodes.presentation.screens.EpisodeDetailsScreen
+import dev.xnative.cleanrmapi.presentation.navigation.NavScreen
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 
 class EpisodesGraphImpl : EpisodesGraph {
 
-    context(polymorphicModuleBuilder: PolymorphicModuleBuilder<Destination>)
+    context(polymorphicModuleBuilder: PolymorphicModuleBuilder<NavKey>)
     override fun subclasses() = with(polymorphicModuleBuilder) {
         subclass(
-            EpisodeDetails::class,
-            EpisodeDetails.serializer()
+            EpisodeDetailsScreen::class,
+            EpisodeDetailsScreen.serializer()
         )
     }
 

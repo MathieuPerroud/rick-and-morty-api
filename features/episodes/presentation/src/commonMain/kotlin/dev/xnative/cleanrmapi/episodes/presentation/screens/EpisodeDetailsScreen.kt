@@ -24,18 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.xnative.cleanrmapi.navigation.Destination
-import dev.xnative.cleanrmapi.navigation.Router
 import dev.xnative.cleanrmapi.presentation.composables.BackArrow
 import dev.xnative.cleanrmapi.presentation.composables.CharacterCard
 import dev.xnative.cleanrmapi.presentation.composables.PreviewContent
-import dev.xnative.cleanrmapi.presentation.composables.Screen
+import dev.xnative.cleanrmapi.presentation.navigation.NavScreen
+import dev.xnative.cleanrmapi.presentation.composables.Screen as BindScreen
 import dev.xnative.cleanrmapi.presentation.theme.PrimaryColor
 import dev.xnative.cleanrmapi.presentation.theme.SurfaceColor
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EpisodeDetails(val episodeId: Int) : Destination() {
+data class EpisodeDetailsScreen(val episodeId: Int) : NavScreen {
 
     /**
      * Displays the Episode Details screen for a selected episode and lists all related characters.
@@ -53,12 +52,11 @@ data class EpisodeDetails(val episodeId: Int) : Destination() {
      * - The user can tap a character card to navigate to that character details screen.
      */
     @Composable
-    override fun Screen(router: Router) {
+    override fun MainComponent(modifier: Modifier) {
 
-        Screen(
-            viewModel = viewModel { EpisodeDetailsViewModel(episodeId) },
-            router = router
-        ) { state, viewModel ->
+        BindScreen(
+            viewModel = viewModel { EpisodeDetailsViewModel(episodeId) }
+        ) { router, state, viewModel ->
 
             Content(
                 state = state,

@@ -17,6 +17,7 @@ kotlinx-serialization-json = "1.10.0"
 ksp = "2.3.2"
 ktor = "3.4.0"
 lifecycle-viewmodel-compose = "2.9.6"
+lifecycle-viewmodel-navigation3 = "2.10.0-alpha08"
 material-icons-extended = "1.7.3"
 navigation3 = "1.0.0-alpha06"
 room = "2.8.4"
@@ -34,6 +35,7 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
+lifecycle-viewmodel-navigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycle-viewmodel-navigation3" }
 navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 
 # Coil

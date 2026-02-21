@@ -13,12 +13,14 @@ kmpLibrary(
 
         implementation(project(":core:data"))
         implementation(project(":core:navigation"))
-        implementation(project(":features:characters:api"))
+        implementation(project(":core:presentation"))
         implementation(project(":features:episodes:api"))
-        implementation(project(":features:characters:navigation"))
+        implementation(project(":features:characters:api"))
         implementation(project(":features:episodes:navigation"))
+        implementation(project(":features:characters:navigation"))
 
         implementation(libs.navigation3.ui)
+        implementation(libs.lifecycle.viewmodel.navigation3)
 
         implementation(libs.bundles.koin.common)
         implementation(libs.bundles.compose.common)

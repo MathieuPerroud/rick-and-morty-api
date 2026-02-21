@@ -15,6 +15,8 @@ kmpLibrary(
         implementation(project(":core:domain"))
         implementation(project(":core:navigation"))
 
+        implementation(libs.navigation3.ui)
+
         implementation(libs.bundles.koin.common)
         implementation(libs.bundles.kotlinx.common)
 
