@@ -5,6 +5,9 @@ import dev.xnative.cleanrmapi.characters.presentation.components.usecases.LoadMo
 import dev.xnative.cleanrmapi.characters.presentation.screens.charactersdashboard.CharactersDashboardContracts
 import dev.xnative.cleanrmapi.characters.presentation.screens.charactersdashboard.CharactersDashboardStore
 
+/**
+ * Triggers pagination from the dashboard list pane.
+ */
 data object LoadMoreCharacters : CharactersDashboardContracts.UiAction {
 
     private val loadMoreCharactersUseCase = LoadMoreCharactersUseCase()

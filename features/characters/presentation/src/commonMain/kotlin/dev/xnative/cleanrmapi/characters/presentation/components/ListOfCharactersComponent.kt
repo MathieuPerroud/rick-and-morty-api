@@ -57,6 +57,9 @@ class ListOfCharactersComponent(
     private val onAction: (UiAction) -> Unit
 ) : UiComponent {
 
+    /**
+     * Visual states rendered by the list component.
+     */
     sealed interface UiState
     data object Loading : UiState
     data class Error(val message: String) : UiState
@@ -67,6 +70,9 @@ class ListOfCharactersComponent(
         val loadingMoreError: String? = null
     ) : UiState
 
+    /**
+     * Intents emitted by the list component to its host.
+     */
     sealed interface UiAction
     data class OnCharacterClicked(val character: CharacterPreview) : UiAction
     data object OnReachedBottom : UiAction
@@ -222,6 +228,7 @@ private fun ObserveReachedBottom(
         }
             .distinctUntilChanged()
             .filter { it }
+            // Emit once per threshold crossing to avoid duplicate pagination requests.
             .collect { onReachedBottom() }
     }
 }

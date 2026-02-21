@@ -15,8 +15,11 @@ import dev.xnative.cleanrmapi.presentation.composables.Screen
 import dev.xnative.cleanrmapi.presentation.navigation.NavScreen
 import kotlinx.serialization.Serializable
 
+/**
+ * Portrait-oriented screen displaying the Characters list.
+ */
 @Serializable
-data object CharactersListScreen: NavScreen {
+data object CharactersListScreen : NavScreen {
 
     @Composable
     operator fun invoke() = MainComponent()

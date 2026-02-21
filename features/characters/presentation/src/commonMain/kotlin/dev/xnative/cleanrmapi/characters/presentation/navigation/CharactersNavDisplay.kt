@@ -1,3 +1,7 @@
 package dev.xnative.cleanrmapi.characters.presentation.navigation
 
-//TODO: Here we are going to handle the switches from listing
+/**
+ * Reserved file for future extraction of Characters-specific NavDisplay helpers.
+ *
+ * The adaptive orchestration currently lives in `CharactersEntryScreen`.
+ */

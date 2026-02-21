@@ -30,6 +30,15 @@ import dev.xnative.cleanrmapi.presentation.navigation.NavScreen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.serialization.Serializable
 
+/**
+ * Entry screen for the Characters feature.
+ *
+ * This screen hosts an internal Navigation3 back stack dedicated to adaptive behavior:
+ * - `Dashboard` in horizontal mode.
+ * - `List` and optional `Details` in vertical mode.
+ *
+ * The parent app router is still used to leave the feature.
+ */
 @Serializable
 data object CharactersEntryScreen : NavScreen {
 
@@ -39,6 +48,7 @@ data object CharactersEntryScreen : NavScreen {
         val state by entryViewModel.state.collectAsState()
         val parentRouter = LocalRouterProvider.current
 
+        // Delegate parent navigation except back, which can be consumed by the internal stack first.
         val localRouter = remember(entryViewModel, parentRouter) {
             object : Router {
                 override fun navigateTo(vararg screens: NavKey) {
@@ -103,6 +113,7 @@ data object CharactersEntryScreen : NavScreen {
         val viewModel = viewModel { CharactersDashboardViewModel() }
         val uiState by viewModel.state.collectAsState()
 
+        // When returning from portrait with a selected character, hydrate dashboard detail pane.
         LaunchedEffect(uiState.detailSection, selectedCharacter?.id) {
             if (selectedCharacter != null && uiState.detailSection is NoCharacterSelected) {
                 viewModel.handleAction(ShowCharacterDetails(selectedCharacter))

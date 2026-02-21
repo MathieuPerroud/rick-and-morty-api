@@ -22,6 +22,9 @@ import dev.xnative.cleanrmapi.presentation.composables.PreviewContent
 import dev.xnative.cleanrmapi.presentation.composables.Screen
 import kotlinx.serialization.Serializable
 
+/**
+ * Portrait destination showing one character details page.
+ */
 @Serializable
 data class CharacterDetailsScreen(val characterId: Int) : NavScreen {
 

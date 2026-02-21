@@ -33,6 +33,12 @@ import dev.xnative.cleanrmapi.presentation.theme.PrimaryColor
 import dev.xnative.cleanrmapi.presentation.theme.SurfaceColor
 import kotlinx.serialization.Serializable
 
+/**
+ * Horizontal master-detail screen for the Characters feature.
+ *
+ * Left pane: reusable [ListOfCharactersComponent].
+ * Right pane: placeholder or [CharacterDetailsComponent] for selected character.
+ */
 @Serializable
 data object CharactersDashboardScreen : NavScreen {
 

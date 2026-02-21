@@ -15,7 +15,12 @@ import androidx.compose.ui.unit.dp
 import dev.xnative.cleanrmapi.presentation.theme.OnBackgroundColor
 import dev.xnative.cleanrmapi.presentation.theme.SurfaceColor
 
-
+/**
+ * Platform-neutral back button used in custom screen headers.
+ *
+ * Note: the icon is intentionally static here (`ArrowBack`). Platform-specific icon
+ * differences are handled by dedicated toolbar components.
+ */
 @Composable
 fun BackArrow(
     modifier: Modifier = Modifier,

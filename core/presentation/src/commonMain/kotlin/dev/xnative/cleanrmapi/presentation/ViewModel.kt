@@ -11,14 +11,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-
+/**
+ * Common contract for view models exposing reactive state and one-shot events.
+ */
 interface StateAwareViewModel<State> {
     val state: StateFlow<State>
     val events: Flow<Any>
 }
 
-
-open class ViewModel<State>(initialState: State): androidx.lifecycle.ViewModel(), StateAwareViewModel<State>,
+/**
+ * Generic ViewModel base used by screens that do not rely on [Store].
+ */
+open class ViewModel<State>(initialState: State) :
+    androidx.lifecycle.ViewModel(),
+    StateAwareViewModel<State>,
     KoinComponent {
 
     private val _state = MutableStateFlow(initialState)
@@ -29,22 +35,25 @@ open class ViewModel<State>(initialState: State): androidx.lifecycle.ViewModel()
     override val events: Flow<Any>
         get() = _events.receiveAsFlow()
 
-    /** This function is made as an extension because when we call it, it is yellow
-     * and this is better for our UX */
+    /**
+     * Applies a pure transformation on the current state.
+     */
     protected fun ViewModel<State>.updateState(block: State.() -> State) {
         _state.update { block.invoke(it) }
     }
 
-    /** This function is made as an extension because when we call it, it is yellow
-     * and this is better for our UX */
+    /**
+     * Emits a one-shot event to observers.
+     */
     protected fun ViewModel<State>.sendEvent(obj: Any) {
         viewModelScope.launch {
             _events.send(obj)
         }
     }
 
-    /** This function is made as an extension because when we call it, it is yellow
-     * and this is better for our UX too*/
+    /**
+     * Collects a flow source in background and reports updates on Main dispatcher.
+     */
     fun <T> androidx.lifecycle.ViewModel.collectData(
         source: suspend () -> Flow<T>,
         onResult: Result<T>.() -> Unit
@@ -64,6 +73,9 @@ open class ViewModel<State>(initialState: State): androidx.lifecycle.ViewModel()
 
     }
 
+    /**
+     * Executes a one-shot suspend source in background and reports on Main dispatcher.
+     */
     fun <T> androidx.lifecycle.ViewModel.fetchData(
         source: suspend () -> T,
         onResult: Result<T>.() -> Unit
@@ -83,6 +95,11 @@ open class ViewModel<State>(initialState: State): androidx.lifecycle.ViewModel()
 
 }
 
+/**
+ * ViewModel adapter around a [Store] instance.
+ *
+ * It bridges store state/events to Compose and forwards [StoreAction] execution.
+ */
 open class StoreViewModel<State, StateStore : Store<State>, Action : StoreAction<State, StateStore>>(
     protected val store: StateStore
 ) :
@@ -103,6 +120,9 @@ open class StoreViewModel<State, StateStore : Store<State>, Action : StoreAction
 
 }
 
+/**
+ * Reducer contract executed against a typed [Store].
+ */
 interface StoreAction<State, StateStore : Store<State>> : KoinComponent {
     fun execute(from: StateStore) = with(this) {
         from.reduce()

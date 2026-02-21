@@ -12,21 +12,26 @@ import dev.xnative.cleanrmapi.presentation.navigation.NavScreen
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
+/**
+ * Binds a [StateAwareViewModel] to a composable screen.
+ *
+ * This wrapper centralizes:
+ * - state collection,
+ * - optional back handling,
+ * - one-shot event processing (including navigation events).
+ */
 @Composable
-fun <State, VM: StateAwareViewModel<State>> Screen(
+fun <State, VM : StateAwareViewModel<State>> Screen(
     viewModel: VM,
     onBack: ((state: State, viewModel: VM) -> Unit)? = null,
-    onEvent: (state: State, viewModel: VM, event: Any) -> Unit = { _, _, _ ->  },
+    onEvent: (state: State, viewModel: VM, event: Any) -> Unit = { _, _, _ -> },
     content: @Composable (router: Router, state: State, viewModel: VM) -> Unit
 ) {
-
-    // Observing the state from the view model.
     val state by viewModel.state.collectAsState()
 
     val focusManager = LocalFocusManager.current
     val router = LocalRouterProvider.current
 
-    // Handle back press event.
     if (onBack != null)
         BackHandler(
             onBack = {
@@ -35,7 +40,6 @@ fun <State, VM: StateAwareViewModel<State>> Screen(
             }
         )
 
-    // Collect events emitted by the ViewModel.
     LaunchedEffect(viewModel) {
         viewModel.events
             .onEach { event ->

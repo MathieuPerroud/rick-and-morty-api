@@ -3,9 +3,11 @@ package dev.xnative.cleanrmapi.episodes.presentation.navigation
 import androidx.navigation3.runtime.NavKey
 import dev.xnative.cleanrmapi.episodes.navigation.EpisodesGraph
 import dev.xnative.cleanrmapi.episodes.presentation.screens.EpisodeDetailsScreen
-import dev.xnative.cleanrmapi.presentation.navigation.NavScreen
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 
+/**
+ * Registers Episodes feature navigation keys for polymorphic serialization.
+ */
 class EpisodesGraphImpl : EpisodesGraph {
 
     context(polymorphicModuleBuilder: PolymorphicModuleBuilder<NavKey>)
@@ -17,4 +19,3 @@ class EpisodesGraphImpl : EpisodesGraph {
     }
 
 }
-

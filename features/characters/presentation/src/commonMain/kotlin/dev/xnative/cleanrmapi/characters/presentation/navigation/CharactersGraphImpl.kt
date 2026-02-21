@@ -6,9 +6,11 @@ import dev.xnative.cleanrmapi.characters.presentation.screens.characterdetails.C
 import dev.xnative.cleanrmapi.characters.presentation.screens.characterslist.CharactersListScreen
 import dev.xnative.cleanrmapi.characters.presentation.screens.charactersdashboard.CharactersDashboardScreen
 import dev.xnative.cleanrmapi.characters.presentation.screens.CharactersEntryScreen
-import dev.xnative.cleanrmapi.presentation.navigation.NavScreen
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 
+/**
+ * Registers Characters feature navigation keys for polymorphic serialization.
+ */
 class CharactersGraphImpl : CharactersGraph {
 
     context(polymorphicModuleBuilder: PolymorphicModuleBuilder<NavKey>)

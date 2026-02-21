@@ -14,14 +14,14 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 /**
- * @param storeScope [CoroutineScope] tied to this [Store].
- * As this scope implements [kotlin.AutoCloseable], it can be canceled with other closeables for example
- * in onDestroys functions. i.e [androidx.lifecycle.ViewModel.clear]
+ * Base reactive state container used by screen ViewModels.
  *
- * SupervisorJob ensure that each Job can be independent. If one fail it only stops itself.
+ * Design choices:
+ * - Owns a dedicated [storeScope] so side effects are isolated from UI composition.
+ * - Uses [SupervisorJob] to prevent one failing child coroutine from cancelling siblings.
+ * - Exposes state via [StateFlow] and one-shot events via a buffered [Channel].
  *
- * This scope is bound to
- * [Dispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
+ * [storeScope] is [AutoCloseable], so a hosting ViewModel can close it with lifecycle APIs.
  */
 abstract class Store<State>(
     initialState: State,
@@ -38,23 +38,27 @@ abstract class Store<State>(
     val state: StateFlow<State>
         get() = _state
 
-
-    /** This function is made as an extension because when we call it, it is colored
-     * and this is better for our DeveloperX. */
+    /**
+     * Applies a pure state transformation on the current state.
+     */
     fun Store<State>.updateState(block: State.() -> State) {
         _state.update { block.invoke(it) }
     }
 
-    /** This function is made as an extension because when we call it, it is colored
-     * and this is better for our DeveloperX. */
+    /**
+     * Emits a one-shot event to observers.
+     */
     fun Store<State>.sendEvent(obj: Any) {
         storeScope.launch {
             _events.send(obj)
         }
     }
 
-    /** This function is made as an extension because when we call it, it is yellow
-     * and this is better for our UX too*/
+    /**
+     * Collects a flow source in background and forwards each result on Main.
+     *
+     * This helper centralizes error forwarding and threading decisions for stores.
+     */
     fun <T> Store<State>.collectData(
         source: suspend () -> Flow<T>,
         onResult: Result<T>.() -> Unit
@@ -77,6 +81,9 @@ abstract class Store<State>(
 
     }
 
+    /**
+     * Executes a one-shot suspend source in background and publishes its result on Main.
+     */
     fun <T> Store<State>.fetchData(
         source: suspend () -> T,
         onResult: Result<T>.() -> Unit
@@ -99,6 +106,9 @@ abstract class Store<State>(
 
 }
 
+/**
+ * Lifecycle-bound [CoroutineScope] that can be closed from hosting components.
+ */
 class CloseableCoroutineScope(override val coroutineContext: CoroutineContext) : AutoCloseable,
     CoroutineScope {
     override fun close() = coroutineContext.cancel()

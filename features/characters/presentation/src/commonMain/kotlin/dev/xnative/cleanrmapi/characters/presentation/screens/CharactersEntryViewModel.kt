@@ -8,23 +8,43 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
+/**
+ * Layout modes supported by the entry orchestrator.
+ */
 internal enum class LayoutMode {
     Horizontal,
     Vertical
 }
 
+/**
+ * Internal destinations managed by the nested `CharactersEntry` navigation stack.
+ */
 internal sealed interface CharactersEntryDestination : NavKey {
     data object Dashboard : CharactersEntryDestination
     data object List : CharactersEntryDestination
     data class Details(val characterId: Int) : CharactersEntryDestination
 }
 
+/**
+ * UI state for [CharactersEntryViewModel].
+ *
+ * [selectedCharacter] is promoted to host-level state so layout transitions can preserve
+ * selection intent when switching between dashboard and portrait navigation.
+ */
 internal data class CharactersEntryUiState(
     val layoutMode: LayoutMode? = null,
     val selectedCharacter: CharacterPreview? = null,
     val backStack: NavBackStack<NavKey> = NavBackStack(CharactersEntryDestination.Dashboard)
 )
 
+/**
+ * Orchestrates adaptive navigation for the Characters feature.
+ *
+ * Behavior goals:
+ * - Horizontal mode uses a single dashboard entry.
+ * - Vertical mode uses an internal stack (`List -> Details`) when a character is selected.
+ * - Layout changes preserve selected character intent.
+ */
 internal class CharactersEntryViewModel : ViewModel() {
 
     private val _state = MutableStateFlow(CharactersEntryUiState())
@@ -41,6 +61,7 @@ internal class CharactersEntryViewModel : ViewModel() {
 
         when (nextLayoutMode) {
             LayoutMode.Horizontal -> {
+                // Dashboard is the single source of truth in large layouts.
                 setBackStack(CharactersEntryDestination.Dashboard)
             }
 
@@ -49,6 +70,7 @@ internal class CharactersEntryViewModel : ViewModel() {
                 if (selectedCharacterId == null) {
                     setBackStack(CharactersEntryDestination.List)
                 } else {
+                    // Keep detail visible after rotation by rebuilding List -> Details.
                     setBackStack(
                         CharactersEntryDestination.List,
                         CharactersEntryDestination.Details(selectedCharacterId)
@@ -63,6 +85,7 @@ internal class CharactersEntryViewModel : ViewModel() {
 
         when (state.value.layoutMode) {
             LayoutMode.Horizontal -> {
+                // In horizontal mode details are rendered inside dashboard content.
                 setBackStack(CharactersEntryDestination.Dashboard)
             }
 
@@ -83,6 +106,7 @@ internal class CharactersEntryViewModel : ViewModel() {
             backStack.removeLastOrNull()
 
             if (backStack.lastOrNull() == CharactersEntryDestination.List) {
+                // Returning to list in portrait resets the current detail selection.
                 _state.update { it.copy(selectedCharacter = null) }
             }
             return

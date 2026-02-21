@@ -9,6 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
+/**
+ * Temporary startup destination displayed while app wiring is initialized.
+ */
 @Serializable
 object Splash : NavKey {
 

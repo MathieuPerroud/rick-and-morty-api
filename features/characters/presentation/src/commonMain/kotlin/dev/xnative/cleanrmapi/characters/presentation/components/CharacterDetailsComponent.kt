@@ -80,6 +80,10 @@ class CharacterDetailsComponent(
     private val uiState: UiState,
     private val onAction: (UiAction) -> Unit
 ) : UiComponent {
+
+    /**
+     * Visual states rendered by the details component.
+     */
     interface UiState
     object Loading : UiState
 
@@ -93,10 +97,12 @@ class CharacterDetailsComponent(
         val location: String,
     ) : UiState
 
-
+    /**
+     * Intents emitted by the details component to its host.
+     */
     sealed interface UiAction
 
-    data class OnEpisodeClicked(val episode: EpisodePreview): UiAction
+    data class OnEpisodeClicked(val episode: EpisodePreview) : UiAction
 
     @Composable
     override fun MainComponent(

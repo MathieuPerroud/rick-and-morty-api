@@ -5,6 +5,9 @@ import dev.xnative.cleanrmapi.characters.presentation.components.usecases.LoadMo
 import dev.xnative.cleanrmapi.characters.presentation.screens.characterslist.CharactersListContracts
 import dev.xnative.cleanrmapi.characters.presentation.screens.characterslist.CharactersListStore
 
+/**
+ * Triggers list pagination for `CharactersList` through the shared use case.
+ */
 data object LoadMoreCharacters : CharactersListContracts.UiAction {
 
     private val loadMoreCharactersUseCase = LoadMoreCharactersUseCase()

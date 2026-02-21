@@ -5,7 +5,10 @@ import dev.xnative.cleanrmapi.characters.presentation.screens.characterdetails.C
 import dev.xnative.cleanrmapi.episodes.navigation.EpisodesNavigation
 import org.koin.core.component.inject
 
-class NavigateToEpisodeDetails(private val episodeId: Int): CharacterDetailsContracts.UiAction {
+/**
+ * Navigates from character details to a selected episode details screen.
+ */
+class NavigateToEpisodeDetails(private val episodeId: Int) : CharacterDetailsContracts.UiAction {
     private val episodeNavigator: EpisodesNavigation by inject()
 
     override fun CharacterDetailsStore.reduce() {

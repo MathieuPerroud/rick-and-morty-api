@@ -6,10 +6,16 @@ import dev.xnative.cleanrmapi.domain.episode.usecases.GetEpisodeWithCharacters
 import dev.xnative.cleanrmapi.presentation.ViewModel
 import org.koin.core.component.inject
 
+/**
+ * User intents handled by [EpisodeDetailsViewModel].
+ */
 sealed interface EpisodeDetailsAction {
-    data class SelectedCharacter(val character: Character): EpisodeDetailsAction
+    data class SelectedCharacter(val character: Character) : EpisodeDetailsAction
 }
 
+/**
+ * ViewModel loading episode details and delegating cross-feature navigation.
+ */
 class EpisodeDetailsViewModel(episodeId: Int) :
     ViewModel<EpisodeDetailsState>(EpisodeDetailsState.Loading) {
 
@@ -43,7 +49,7 @@ class EpisodeDetailsViewModel(episodeId: Int) :
 
 
     fun handleAction(action: EpisodeDetailsAction) {
-        when(action) {
+        when (action) {
             is EpisodeDetailsAction.SelectedCharacter -> selectedCharacter(action.character)
         }
     }
@@ -54,6 +60,9 @@ class EpisodeDetailsViewModel(episodeId: Int) :
 
 }
 
+/**
+ * UI states for episode details screen.
+ */
 sealed interface EpisodeDetailsState {
     data object Loading : EpisodeDetailsState
 

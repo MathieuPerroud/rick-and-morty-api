@@ -8,15 +8,28 @@ import dev.xnative.cleanrmapi.presentation.Store
 import dev.xnative.cleanrmapi.presentation.StoreAction
 import org.koin.core.component.inject
 
+/**
+ * Contracts owned by the character details screen.
+ */
 sealed interface CharacterDetailsContracts {
 
+    /**
+     * Aggregates all component states rendered by details screen.
+     */
     data class UiState(
         val characterDetailsState: CharacterDetailsComponent.UiState =
             CharacterDetailsComponent.Loading
     )
+
+    /**
+     * Marker interface for details screen actions.
+     */
     interface UiAction : StoreAction<UiState, CharacterDetailsStore>
 }
 
+/**
+ * Store responsible for loading and exposing a single character details state.
+ */
 class CharacterDetailsStore(characterId: Int) : Store<UiState>(
     initialState = UiState()
 ) {
@@ -25,7 +38,10 @@ class CharacterDetailsStore(characterId: Int) : Store<UiState>(
     }
 }
 
-private class Initialize(private val characterId: Int): StoreAction<UiState, CharacterDetailsStore>  {
+/**
+ * Bootstrap action loading character details with a local-first strategy.
+ */
+private class Initialize(private val characterId: Int) : StoreAction<UiState, CharacterDetailsStore> {
 
     private val characterRepository: CharacterRepository by inject()
 
@@ -41,7 +57,5 @@ private class Initialize(private val characterId: Int): StoreAction<UiState, Cha
                 }
             }
         }
-
     }
-
 }

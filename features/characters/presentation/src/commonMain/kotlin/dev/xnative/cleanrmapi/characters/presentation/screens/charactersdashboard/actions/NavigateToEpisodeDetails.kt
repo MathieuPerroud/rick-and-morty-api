@@ -5,6 +5,9 @@ import dev.xnative.cleanrmapi.characters.presentation.screens.charactersdashboar
 import dev.xnative.cleanrmapi.episodes.navigation.EpisodesNavigation
 import org.koin.core.component.inject
 
+/**
+ * Forwards episode selection from character details pane to Episodes feature navigation.
+ */
 class NavigateToEpisodeDetails(
     private val episodeId: Int
 ) : CharactersDashboardContracts.UiAction {

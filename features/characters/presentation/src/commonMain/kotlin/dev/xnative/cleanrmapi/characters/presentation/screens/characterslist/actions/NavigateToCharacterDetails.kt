@@ -6,6 +6,9 @@ import dev.xnative.cleanrmapi.characters.presentation.screens.characterslist.Cha
 import dev.xnative.cleanrmapi.domain.character.models.CharacterPreview
 import org.koin.core.component.inject
 
+/**
+ * Screen action mapping a selected character to portrait navigation.
+ */
 class NavigateToCharacterDetails(
     val character: CharacterPreview
 ) : CharactersListContracts.UiAction {

@@ -12,6 +12,12 @@ import androidx.navigation3.ui.NavDisplay
 import dev.xnative.cleanrmapi.presentation.navigation.NavScreen
 import dev.xnative.cleanrmapi.presentation.localproviders.LocalRouterProvider
 
+/**
+ * Root composable of the application.
+ *
+ * It provides the app router through [LocalRouterProvider] and renders the current
+ * [NavScreen] with Navigation3.
+ */
 @Composable
 fun App(
     appViewModel: AppViewModel = viewModel { AppViewModel() }

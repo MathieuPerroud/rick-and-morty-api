@@ -8,6 +8,9 @@ import dev.xnative.cleanrmapi.characters.presentation.screens.charactersdashboar
 import dev.xnative.cleanrmapi.domain.character.models.CharacterPreview
 import org.koin.core.component.inject
 
+/**
+ * Loads and exposes details for the selected character in dashboard mode.
+ */
 class ShowCharacterDetails(
     val character: CharacterPreview
 ) : CharactersDashboardContracts.UiAction {

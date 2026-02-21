@@ -17,7 +17,13 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.dsl.module
 
+/**
+ * Contracts owned by [AppViewModel].
+ */
 interface AppContracts {
+    /**
+     * Holds app-level navigation state and the router bound to it.
+     */
     data class UiState(
 //        val graphs: List<Graph> = emptyList(),
         val backStack: NavBackStack<NavKey> = NavBackStack(Splash),
@@ -25,6 +31,14 @@ interface AppContracts {
     )
 }
 
+/**
+ * Initializes app-wide navigation and exposes the root back stack.
+ *
+ * Technical choices:
+ * - Router is created from state and injected dynamically in Koin so feature modules
+ *   can navigate without depending on Compose.
+ * - Splash is pushed first, then replaced by the initial feature entry point.
+ */
 class AppViewModel :
     ViewModel(),
     KoinComponent {
@@ -53,6 +67,7 @@ class AppViewModel :
         viewModelScope.launch {
             delay(300)
 
+            // Prevent duplicate navigation when state is restored with a non-splash stack.
             val hasOnlySplash = state.value.backStack.size == 1 &&
                 state.value.backStack.firstOrNull() == Splash
 

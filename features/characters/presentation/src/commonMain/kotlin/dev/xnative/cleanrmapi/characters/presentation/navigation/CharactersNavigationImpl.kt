@@ -5,6 +5,9 @@ import dev.xnative.cleanrmapi.navigation.Router
 import dev.xnative.cleanrmapi.characters.presentation.screens.characterdetails.CharacterDetailsScreen
 import dev.xnative.cleanrmapi.characters.presentation.screens.CharactersEntryScreen
 
+/**
+ * Default implementation of Characters navigation contract.
+ */
 class CharactersNavigationImpl(
     private val router: Router
 ) : CharactersNavigation {

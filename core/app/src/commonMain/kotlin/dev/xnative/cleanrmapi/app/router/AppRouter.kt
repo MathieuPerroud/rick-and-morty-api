@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 
+/**
+ * Router implementation backed by the app-level [NavBackStack].
+ */
 class AppRouter(private val backStack: NavBackStack<NavKey>) : Router {
 
     private val screenOnTop = MutableStateFlow(backStack.last())
