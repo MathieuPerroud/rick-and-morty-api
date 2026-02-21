@@ -26,7 +26,7 @@ interface CharacterRepository {
      * @param id The unique identifier of the character to be fetched.
      * @return Details of the specified character.
      */
-    suspend fun getCharacterDetailed(id: Int): CharacterDetails
+    suspend fun getCharacterDetailedLocalFirst(id: Int): CharacterDetails
 
     /**
      * Fetches the episodes of a specific character.

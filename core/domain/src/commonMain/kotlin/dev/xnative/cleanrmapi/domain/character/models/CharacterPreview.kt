@@ -1,5 +1,7 @@
 package dev.xnative.cleanrmapi.domain.character.models
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a minimal description of a Rick&Morty character.
  *
@@ -9,6 +11,7 @@ package dev.xnative.cleanrmapi.domain.character.models
  * @property type Further description or subspecies of the character.
  * @property avatarUrl A URL pointing to an avatar or image of the character.
  */
+@Serializable
 data class CharacterPreview(
     override val id: Int,
     override val name: String,

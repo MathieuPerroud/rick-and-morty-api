@@ -16,10 +16,11 @@ import cleanrmapiudf.core.presentation.generated.resources.female
 import cleanrmapiudf.core.presentation.generated.resources.genderless
 import cleanrmapiudf.core.presentation.generated.resources.male
 import cleanrmapiudf.core.presentation.generated.resources.unknown
+import dev.xnative.cleanrmapi.characters.domain.models.CharacterDetails
 import dev.xnative.cleanrmapi.characters.domain.models.CharacterGender
 import dev.xnative.cleanrmapi.characters.domain.models.CharacterStatus
+import dev.xnative.cleanrmapi.characters.presentation.components.CharacterDetailsComponent
 import org.jetbrains.compose.resources.stringResource
-
 
 val CharacterStatus.imageVector: ImageVector
     @Composable get() = when (this) {
@@ -50,3 +51,13 @@ val CharacterGender.text: String
         CharacterGender.Genderless -> stringResource(Res.string.genderless)
         CharacterGender.Unknown -> stringResource(Res.string.unknown)
     }
+
+fun CharacterDetails.toLoadedCharacterState() = CharacterDetailsComponent.Loaded(
+    name = name,
+    avatarUrl = avatarUrl,
+    episodes = episodes,
+    status = status,
+    gender = gender,
+    origin = origin,
+    location = location
+)

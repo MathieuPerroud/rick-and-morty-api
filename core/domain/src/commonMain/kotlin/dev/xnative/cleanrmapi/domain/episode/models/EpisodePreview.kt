@@ -1,5 +1,7 @@
 package dev.xnative.cleanrmapi.domain.episode.models
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a detailed description of an episode.
  *
@@ -8,6 +10,8 @@ package dev.xnative.cleanrmapi.domain.episode.models
  * @property airDate The broadcast date of the episode.
  * @property episode The episode code, which usually includes both the season and episode number (e.g., S01E01).
  */
+
+@Serializable
 data class EpisodePreview(
     val id: Int,
     val name: String,

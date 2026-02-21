@@ -20,6 +20,7 @@ kmpLibrary(
         implementation(project(":features:episodes:navigation"))
 
         implementation(libs.navigation3.ui)
+        implementation(libs.lifecycle.viewmodel.navigation3)
 
         implementation(libs.bundles.koin.common)
         implementation(libs.bundles.kotlinx.common)

@@ -85,7 +85,7 @@ internal class CharacterRepositoryImpl(
      * @return The [CharacterPreview] object representing the character details.
      * @throws Exception If the character cannot be found both locally and via the API.
      */
-    override suspend fun getCharacterDetailed(id: Int): CharacterDetails {
+    override suspend fun getCharacterDetailedLocalFirst(id: Int): CharacterDetails {
 
         val characterLocal = GetCharacterObjectIfExists(characterId = id)
 
