@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import org.mathieu.cleanrmapi.domain.models.character.Character
 import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
@@ -44,9 +43,8 @@ private typealias UIState = CharactersState
 /**
  * Root screen of the scope back stack: the characters list rendered by itself.
  *
- * As a [NavScreen] the key owns its rendering; the selection callback is folded into the view
- * model, whose `CharactersNavigation` intention pushes the details key (completed when the
- * details screen becomes a nav3 key).
+ * Selection is folded into the view model, which raises the `CharactersNavigation` intention;
+ * no composable here knows about navigation.
  */
 data object CharactersScreen : NavScreen {
 
@@ -58,24 +56,9 @@ data object CharactersScreen : NavScreen {
         CharactersContent(
             modifier = modifier,
             state = state,
-            onSelectCharacter = { }
+            onSelectCharacter = viewModel::onCharacterSelected
         )
     }
-}
-
-/** Renders the list while the activity still hosts it through compose-navigation. */
-@Composable
-fun CharactersScreen(navController: NavController) {
-    val viewModel: CharactersViewModel = viewModel()
-    val state by viewModel.state.collectAsState()
-
-    CharactersContent(
-        state = state,
-        onSelectCharacter = { character ->
-            navController.navigate("characterDetail/${character.id}")
-        }
-    )
-
 }
 
 

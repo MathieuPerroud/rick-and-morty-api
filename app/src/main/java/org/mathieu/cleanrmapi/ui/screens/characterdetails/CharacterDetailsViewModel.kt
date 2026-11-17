@@ -1,27 +1,25 @@
 package org.mathieu.cleanrmapi.ui.screens.characterdetails
 
 import android.app.Application
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.mathieu.cleanrmapi.domain.repositories.CharacterRepository
+import org.mathieu.cleanrmapi.presentation.navigation.CharacterDetailsNavigation
 import org.mathieu.cleanrmapi.ui.core.ViewModel
 
 
-sealed interface UiEvent {
-
-    object FailedToLoadCharacterDetails: UiEvent
-
-}
+/**
+ * Event channel of the details screen.
+ *
+ * No navigation-only event exists any more: closing the screen after a failed load is folded
+ * into the view model, which calls the navigation intention directly.
+ */
+sealed interface UiEvent
 
 class CharacterDetailsViewModel(application: Application) : ViewModel<CharacterDetailsState, UiEvent>(CharacterDetailsState(), application) {
 
     private val characterRepository: CharacterRepository by inject()
+
+    private val characterDetailsNavigation: CharacterDetailsNavigation by inject()
 
     fun init(characterId: Int) {
 
@@ -35,11 +33,16 @@ class CharacterDetailsViewModel(application: Application) : ViewModel<CharacterD
 
             onFailure {
                 updateState { copy(error = it.toString()) }
-                sendEvent(UiEvent.FailedToLoadCharacterDetails)
+                characterDetailsNavigation.goBack()
             }
 
             updateState { copy(isLoading = false) }
         }
+    }
+
+    /** Back button pressed: closes this screen through the navigation intention. */
+    fun onBackClicked() {
+        characterDetailsNavigation.goBack()
     }
 
 

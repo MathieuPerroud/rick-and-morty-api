@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,47 +39,45 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
 import org.mathieu.cleanrmapi.ui.core.theme.Purple40
+import org.mathieu.cleanrmapi.ui.navigation.NavScreen
 
 private typealias UIState = CharacterDetailsState
 
-@Composable
-fun CharacterDetailsScreen(
-    navController: NavController,
-    id: Int
-) {
-    val viewModel: CharacterDetailsViewModel = viewModel()
-    val state by viewModel.state.collectAsState()
+/**
+ * Character details as a navigation key: the character id travels in the constructor instead of
+ * a route argument, and the screen renders itself through [MainComponent].
+ */
+data class CharacterDetailsScreen(val characterId: Int) : NavScreen {
 
-    viewModel.init(characterId = id)
+    /**
+     * Renders the details page and binds it to its view model; the back button and a failed
+     * load both close the screen through the view model's navigation intention.
+     */
+    @Composable
+    override fun MainComponent(modifier: Modifier) {
+        val viewModel: CharacterDetailsViewModel = viewModel()
+        val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(viewModel.uiEvents) {
+        viewModel.init(characterId = characterId)
 
-        viewModel.uiEvents.collect { uiEvent ->
-            when (uiEvent) {
-                UiEvent.FailedToLoadCharacterDetails -> navController.popBackStack()
-            }
-        }
-
+        CharacterDetailsContent(
+            modifier = modifier,
+            state = state,
+            onClickBack = viewModel::onBackClicked
+        )
     }
-
-    CharacterDetailsContent(
-        state = state,
-        onClickBack = navController::popBackStack
-    )
-
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 private fun CharacterDetailsContent(
+    modifier: Modifier = Modifier,
     state: UIState = UIState(),
     onClickBack: () -> Unit = { }
-) = Scaffold(topBar = {
+) = Scaffold(modifier = modifier, topBar = {
 
     Row(
         modifier = Modifier
@@ -181,4 +178,3 @@ private fun CharacterDetailsContent(
 private fun CharacterDetailsPreview() = PreviewContent {
     CharacterDetailsContent()
 }
-

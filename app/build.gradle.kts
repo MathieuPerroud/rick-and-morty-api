@@ -57,7 +57,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_9)
 }
 
-val navVersion: String by project
 val koinVersion: String by project
 val ktorVersion: String by project
 val realmVersion: String by project
@@ -80,8 +79,6 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     // material-icons-core is no longer a transitive dependency of material3: the BOM pins it.
     implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.navigation:navigation-compose:$navVersion")
-
     //Navigation3 (versions verbatim from main's gradle/libs.versions.toml)
     implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.0.0-alpha06")
     implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0-alpha08")

@@ -6,16 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import org.mathieu.cleanrmapi.ui.core.theme.LeTheme
-import org.mathieu.cleanrmapi.ui.screens.characterdetails.CharacterDetailsScreen
-import org.mathieu.cleanrmapi.ui.screens.characters.CharactersScreen
+import org.mathieu.cleanrmapi.ui.navigation.AppNavHost
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,42 +18,11 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
-                    content = { MainContent() }
+                    // The scope NavDisplay host owns the back stack; there is no NavHost,
+                    // rememberNavController, route string or navArgument left in the app.
+                    content = { AppNavHost() }
                 )
             }
         }
     }
 }
-
-@Composable
-private fun MainContent() {
-
-    val navController = rememberNavController()
-
-    //https://developer.android.com/jetpack/compose/navigation?hl=fr
-    NavHost(navController = navController, startDestination = "characters") {
-
-        composable("characters") { CharactersScreen(navController) }
-
-        composable(
-            route = "characterDetail/{characterId}",
-            arguments = listOf(navArgument("characterId") { type = NavType.IntType })
-        ) { backStackEntry ->
-
-            val id = backStackEntry.arguments?.getInt("characterId") ?: run {
-                navController.popBackStack()
-                return@composable
-            }
-
-            CharacterDetailsScreen(
-                navController = navController,
-                id = id
-            )
-
-        }
-
-    }
-
-}
-
-data class CharacterDetails(val characterId: Int)
