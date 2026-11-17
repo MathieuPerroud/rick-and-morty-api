@@ -82,6 +82,10 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.navigation:navigation-compose:$navVersion")
 
+    //Navigation3 (versions verbatim from main's gradle/libs.versions.toml)
+    implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.0.0-alpha06")
+    implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0-alpha08")
+
     // Coil
     implementation("io.coil-kt:coil:2.3.0")
     implementation("io.coil-kt:coil-compose:2.3.0")

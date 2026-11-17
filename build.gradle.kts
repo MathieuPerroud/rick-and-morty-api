@@ -1,9 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    // AGP 8.6.0 is the minimal version satisfying the AAR metadata floor of the navigation3
-    // stack (compose 1.10 requires AGP 8.6.0+); AGP 9 is excluded because it forces
-    // kotlin-gradle-plugin 2.2.10 onto the buildscript classpath, which Realm 3.0.0 cannot run under.
-    id("com.android.application") version "8.6.0" apply false
+    // AGP 8.9.1 is the minimal version satisfying the AAR metadata floor of the navigation3
+    // stack (androidx.navigation3 / lifecycle / navigationevent require AGP 8.9.1+); AGP 9 is
+    // excluded because it forces kotlin-gradle-plugin 2.2.10 onto the buildscript classpath,
+    // which the Realm compiler plugin (3.0.0, Kotlin 2.0 line) cannot run under.
+    id("com.android.application") version "8.9.1" apply false
     // Kotlin 2.0.21 is the kotlin-stdlib version androidx.navigation3 and androidx.compose declare
     // on their Android variants (metadata 2.0.0) and the newest line Realm 3.0.0 is built against.
     id("org.jetbrains.kotlin.android") version "2.0.21" apply false

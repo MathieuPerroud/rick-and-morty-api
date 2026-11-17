@@ -37,9 +37,33 @@ import coil.compose.SubcomposeAsyncImage
 import org.mathieu.cleanrmapi.domain.models.character.Character
 import org.mathieu.cleanrmapi.ui.core.composables.PreviewContent
 import org.mathieu.cleanrmapi.ui.core.theme.Purple40
+import org.mathieu.cleanrmapi.ui.navigation.NavScreen
 
 private typealias UIState = CharactersState
 
+/**
+ * Root screen of the scope back stack: the characters list rendered by itself.
+ *
+ * As a [NavScreen] the key owns its rendering; the selection callback is folded into the view
+ * model, whose `CharactersNavigation` intention pushes the details key (completed when the
+ * details screen becomes a nav3 key).
+ */
+data object CharactersScreen : NavScreen {
+
+    @Composable
+    override fun MainComponent(modifier: Modifier) {
+        val viewModel: CharactersViewModel = viewModel()
+        val state by viewModel.state.collectAsState()
+
+        CharactersContent(
+            modifier = modifier,
+            state = state,
+            onSelectCharacter = { }
+        )
+    }
+}
+
+/** Renders the list while the activity still hosts it through compose-navigation. */
 @Composable
 fun CharactersScreen(navController: NavController) {
     val viewModel: CharactersViewModel = viewModel()
@@ -58,9 +82,10 @@ fun CharactersScreen(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 private fun CharactersContent(
+    modifier: Modifier = Modifier,
     state: UIState = UIState(),
     onSelectCharacter: (Character) -> Unit = { }
-) = Scaffold(topBar = {
+) = Scaffold(modifier = modifier, topBar = {
     Text(
         modifier = Modifier
             .background(Purple40)
