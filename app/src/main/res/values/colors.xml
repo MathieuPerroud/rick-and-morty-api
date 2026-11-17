@@ -5,6 +5,8 @@
     <color name="brillant_rose">#ED61C4</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <!-- Base declaration required by values-night / values-notnight (lint MissingDefaultResource). -->
+    <color name="background">@color/white</color>
 
     <color name="on_background"/>
     <color name="text_color"/>
