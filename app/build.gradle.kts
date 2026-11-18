@@ -66,12 +66,15 @@ dependencies {
 
     //Android
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.datastore:datastore:1.0.0")
+    // lifecycle-runtime-ktx 2.7.0: newest proven in versions/2_action_and_navigation_room_retrofit
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    // datastore 1.2.0: newest proven in main:gradle/libs.versions.toml
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
+    implementation("androidx.datastore:datastore:1.2.0")
 
     //Compose
-    implementation("androidx.activity:activity-compose:1.7.2")
+    // activity-compose 1.12.2: newest proven in main:gradle/libs.versions.toml
+    implementation("androidx.activity:activity-compose:1.12.2")
     implementation(platform("androidx.compose:compose-bom:2025.12.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
@@ -83,10 +86,13 @@ dependencies {
     implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.0.0-alpha06")
     implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0-alpha08")
 
-    // Coil
-    implementation("io.coil-kt:coil:2.3.0")
-    implementation("io.coil-kt:coil-compose:2.3.0")
-    implementation("io.coil-kt:coil-gif:2.3.0")
+    // Coil 2.6.0: newest proven version on the io.coil-kt (coil2) coordinates
+    // (versions/2_action_and_navigation_room_retrofit). Main's coil 3.3.0 lives on the
+    // io.coil-kt.coil3 coordinates with the coil3 package names and is therefore a source
+    // migration, not a version bump: blocked in this pass (documented in w6-report.md).
+    implementation("io.coil-kt:coil:2.6.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-gif:2.6.0")
 
 
     //Koin
@@ -105,7 +111,10 @@ dependencies {
     //JetBrains
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    // kotlinx-serialization-json 1.8.0: newest proven version readable by the frozen Kotlin
+    // 2.0.21 toolchain (main's 1.10.0 is compiled with Kotlin 2.3.0 — metadata 2.3.0 — and is
+    // blocked; see w6-report.md). 1.8.0 is be57848's proven version.
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
     //Testing
     testImplementation("junit:junit:4.13.2")
