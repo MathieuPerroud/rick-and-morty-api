@@ -11,7 +11,9 @@ plugins {
 
 android {
     namespace = "org.mathieu.projet2"
-    compileSdk = 36
+    // compileSdk 37: required by the latest androidx set (core 1.19.1, lifecycle 2.11.0,
+    // compose 1.12.1, navigation3 1.2.0 all declare minCompileSdk 37 in their AAR metadata).
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "org.mathieu.projet2"
@@ -36,8 +38,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        // Java 17: the current androidx/compose/navigation3 set ships bytecode built with
+        // JVM target 11+ and the Kotlin compiler refuses to inline it into 1.8 bytecode
+        // ("Cannot inline bytecode built with JVM target 11 into bytecode that is being
+        // built with JVM target 1.8").
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
@@ -50,10 +56,10 @@ android {
 }
 
 // Keep the Kotlin JVM target aligned with the Java one declared in `android.compileOptions`.
-// (The language-version 1.9 pin existed only for the Realm compiler plugin's compatibility
-// check and is dropped together with Realm; see w7-report.md.)
+// (With AGP 9 built-in Kotlin the default is already `android.compileOptions.targetCompatibility`;
+// this block keeps the value explicit and consistent for every Kotlin compile task.)
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
 }
 
 val koinVersion: String by project
@@ -64,26 +70,23 @@ val roomVersion: String by project
 dependencies {
 
     //Android
-    implementation("androidx.core:core-ktx:1.12.0")
-    // lifecycle-runtime-ktx 2.7.0: newest proven in versions/2_action_and_navigation_room_retrofit
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    // datastore 1.2.0: newest proven in main:gradle/libs.versions.toml
-    implementation("androidx.datastore:datastore-preferences:1.2.0")
-    implementation("androidx.datastore:datastore:1.2.0")
+    implementation("androidx.core:core-ktx:1.19.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.11.0")
+    implementation("androidx.datastore:datastore-preferences:1.3.0")
+    implementation("androidx.datastore:datastore:1.3.0")
 
     //Compose
-    // activity-compose 1.12.2: newest proven in main:gradle/libs.versions.toml
-    implementation("androidx.activity:activity-compose:1.12.2")
-    implementation(platform("androidx.compose:compose-bom:2025.12.00"))
+    implementation("androidx.activity:activity-compose:1.13.0")
+    implementation(platform("androidx.compose:compose-bom:2026.09.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     // material-icons-core is no longer a transitive dependency of material3: the BOM pins it.
     implementation("androidx.compose.material:material-icons-core")
-    //Navigation3 (versions verbatim from main's gradle/libs.versions.toml)
-    implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.0.0-alpha06")
-    implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3:2.10.0-alpha08")
+    //Navigation3 (latest stable on Maven Central: no preview taken)
+    implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.2.0")
+    implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3:2.11.0")
 
     // Coil 2.6.0: newest proven version on the io.coil-kt (coil2) coordinates
     // (versions/2_action_and_navigation_room_retrofit). Main's coil 3.3.0 lives on the
@@ -112,16 +115,15 @@ dependencies {
     //JetBrains
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
-    // kotlinx-serialization-json 1.8.0: newest proven version readable by the frozen Kotlin
-    // 2.0.21 toolchain (main's 1.10.0 is compiled with Kotlin 2.3.0 — metadata 2.3.0 — and is
-    // blocked; see w6-report.md). 1.8.0 is be57848's proven version.
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    // kotlinx-serialization-json 1.13.0: latest stable on Maven Central; its Kotlin 2.3.0
+    // metadata floor (w6-report.md blocker) is satisfied by Kotlin 2.4.21.
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.13.0")
 
     //Testing
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.12.00"))
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2026.09.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
