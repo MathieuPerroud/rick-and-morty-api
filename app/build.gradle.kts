@@ -1,8 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
+    // No `org.jetbrains.kotlin.android`: AGP 9's built-in Kotlin compiles this module
+    // (developer.android.com/build/migrate-to-built-in-kotlin).
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization")
