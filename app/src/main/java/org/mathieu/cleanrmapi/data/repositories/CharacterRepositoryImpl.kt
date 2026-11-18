@@ -7,10 +7,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import org.mathieu.cleanrmapi.data.local.CharacterLocal
-import org.mathieu.cleanrmapi.data.local.objects.CharacterObject
+import org.mathieu.cleanrmapi.data.local.CharacterDao
+import org.mathieu.cleanrmapi.data.local.objects.CharacterEntity
+import org.mathieu.cleanrmapi.data.local.objects.toEntity
 import org.mathieu.cleanrmapi.data.local.objects.toModel
-import org.mathieu.cleanrmapi.data.local.objects.toRealmObject
 import org.mathieu.cleanrmapi.data.remote.CharacterApi
 import org.mathieu.cleanrmapi.data.remote.responses.CharacterResponse
 import org.mathieu.cleanrmapi.domain.models.character.Character
@@ -26,13 +26,13 @@ private val Context.dataStore by preferencesDataStore(
 internal class CharacterRepositoryImpl(
     private val context: Context,
     private val characterApi: CharacterApi,
-    private val characterLocal: CharacterLocal
+    private val characterDao: CharacterDao
 ) : CharacterRepository {
 
     override suspend fun getCharacters(): Flow<List<Character>> =
-        characterLocal
+        characterDao
             .getCharacters()
-            .mapElement(transform = CharacterObject::toModel)
+            .mapElement(transform = CharacterEntity::toModel)
             .also { if (it.first().isEmpty()) fetchNext() }
 
 
@@ -43,8 +43,8 @@ internal class CharacterRepositoryImpl(
      * 1. Reads the next page number from the data store.
      * 2. If there's a valid next page (i.e., page is not -1), it fetches characters from the API for that page.
      * 3. Extracts the next page number from the API response and updates the data store with it.
-     * 4. Transforms the fetched character data into their corresponding realm objects.
-     * 5. Saves the transformed realm objects to the local database.
+     * 4. Transforms the fetched character data into their corresponding local entities.
+     * 5. Saves the transformed entities to the local database.
      *
      * Note: If the `next` attribute from the API response is null or missing, the page number is set to -1, indicating there's no more data to fetch.
      */
@@ -60,9 +60,9 @@ internal class CharacterRepositoryImpl(
 
             context.dataStore.edit { prefs -> prefs[nextPage] = nextPageToLoad }
 
-            val objects = response.results.map(transform = CharacterResponse::toRealmObject)
+            val objects = response.results.map(transform = CharacterResponse::toEntity)
 
-            characterLocal.saveCharacters(objects)
+            characterDao.saveCharacters(objects)
         }
 
     }
@@ -85,10 +85,10 @@ internal class CharacterRepositoryImpl(
      * @throws Exception If the character cannot be found both locally and via the API.
      */
     override suspend fun getCharacter(id: Int): Character =
-        characterLocal.getCharacter(id)?.toModel()
+        characterDao.getCharacter(id)?.toModel()
             ?: characterApi.getCharacter(id = id)?.let { response ->
-                val obj = response.toRealmObject()
-                characterLocal.insert(obj)
+                val obj = response.toEntity()
+                characterDao.insert(obj)
                 obj.toModel()
             }
             ?: throw Exception("Character not found.")
