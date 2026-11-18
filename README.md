@@ -1,5 +1,7 @@
 # Rick & Morty API — Le système de navigation du module `:app`
 
+## 1. Présentation du projet
+
 Ce dépôt contient une application Android **Rick & Morty API** écrite en **Kotlin** et
 **Jetpack Compose**, organisée en architecture propre : une couche `data` (Ktor, Room), une
 couche `domain` (modèles et dépôts), une couche `presentation` (contrats) et une couche `ui`.
@@ -45,7 +47,8 @@ Le chemin d'un appui utilisateur jusqu'au rendu de l'écran suivant, puis le ret
 
 Le retour suit la même chaîne, à l'envers, par deux voies : la **touche retour système**
 (gestionnaire installé par `NavDisplay`, câblé sur `onBack = scopeViewModel.router::pop`) ou
-la **flèche du top bar** de l'écran de détails (intention `CharacterDetailsNavigation.goBack()`).
+la **flèche de la barre supérieure (TopAppBar)** de l'écran de détails (intention
+`CharacterDetailsNavigation.goBack()`).
 
 ### Diagramme de séquence
 
@@ -388,7 +391,8 @@ Son KDoc (verbatim) :
   `rememberViewModelStoreNavEntryDecorator()`, l'entrée possède son propre `ViewModelStore` —
   deux instances de détails (deux ids)
   donnent deux ViewModels distincts.
-- **La flèche retour du top bar** est câblée sur la ViewModel, pas sur une navigation :
+- **La flèche retour de la barre supérieure (TopAppBar)** est câblée sur la ViewModel, pas
+  sur une navigation :
 
 ```kotlin
         Image(
@@ -430,8 +434,10 @@ interface CharacterDetailsNavigation {
 Une seule méthode par comportement, paramètres de types locaux (`Int`). Fermer l'écran de détails
 est un comportement *de ce module*, donc `goBack()` vit dans son propre contrat.
 
-**Implémentations** — dans le sous-paquet de la portée, `ui/navigation/impl/`, avec le seul
-point de câblage DI du module :
+**Implémentations** — dans le sous-paquet de la portée, `ui/navigation/impl/`, avec le point
+de câblage DI de la navigation : `NavigationModule` centralise le câblage de tous les contrats
+de navigation vers leurs implémentations (un point unique pour la navigation ; les autres
+modules Koin du module `:app`, `DataModule` et `DomainModule`, existent par ailleurs) :
 
 **Fichier** : `ui/navigation/impl/NavigationModule.kt`
 
@@ -551,8 +557,9 @@ Chemins relatifs à `app/src/main/java/org/mathieu/cleanrmapi/` :
 6. `presentation/navigation/CharactersNavigation.kt` puis
    `presentation/navigation/CharacterDetailsNavigation.kt` — les contrats, une méthode par
    comportement.
-7. `ui/navigation/impl/NavigationModule.kt` — les implémentations de portée et le seul
-   point de câblage DI.
+7. `ui/navigation/impl/NavigationModule.kt` — les implémentations de portée et le point
+   de câblage DI unique de la navigation (les autres modules Koin du module `:app`,
+   `DataModule` et `DomainModule`, existent par ailleurs).
 8. `ui/screens/characters/CharactersScreen.kt` + `ui/screens/characters/CharactersViewModel.kt`
    — l'écran racine, du `clickable` à l'intention.
 9. `ui/screens/characterdetails/CharacterDetailsScreen.kt` +
@@ -592,7 +599,7 @@ aucune réponse n'est donnée ici — c'est le contrôle de compréhension.
 2. Pourquoi ne pousse-t-on **jamais** l'écran racine depuis la composition ? Que se passerait-il
    si la pile pouvait être vide pendant le rendu ?
 3. Pourquoi la clé de navigation est-elle l'écran lui-même ? Quels trois mécanismes cela
-   supprime-t-il (route, destination marqueur, résolution `when`) ?
+   supprime-t-il ?
 4. Quelle est la différence d'égalité entre `data object CharactersScreen` et
    `data class CharacterDetailsScreen(val characterId: Int)` ? Que se passe-t-il si deux clés
    de détails portent le même `characterId` ? Et deux avec des ids différents ?
