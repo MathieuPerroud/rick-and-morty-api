@@ -88,13 +88,14 @@ dependencies {
     implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.2.0")
     implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3:2.11.0")
 
-    // Coil 2.6.0: newest proven version on the io.coil-kt (coil2) coordinates
-    // (versions/2_action_and_navigation_room_retrofit). Main's coil 3.3.0 lives on the
-    // io.coil-kt.coil3 coordinates with the coil3 package names and is therefore a source
-    // migration, not a version bump: blocked in this pass (documented in w6-report.md).
-    implementation("io.coil-kt:coil:2.6.0")
-    implementation("io.coil-kt:coil-compose:2.6.0")
-    implementation("io.coil-kt:coil-gif:2.6.0")
+    // Coil 3.6.3 (io.coil-kt.coil3): latest stable on Maven Central (coil3/coil-compose
+    // metadata), with the Coil 2 -> 3 source migration (package coil -> coil3). Coil 3's
+    // core no longer fetches from the network: coil-network-ktor3 restores it and reuses the
+    // Ktor CIO engine already on this module's classpath (coil-kt.github.io/coil/network/).
+    implementation("io.coil-kt.coil3:coil:3.6.3")
+    implementation("io.coil-kt.coil3:coil-compose:3.6.3")
+    implementation("io.coil-kt.coil3:coil-gif:3.6.3")
+    implementation("io.coil-kt.coil3:coil-network-ktor3:3.6.3")
 
 
     //Koin
