@@ -85,7 +85,7 @@ démarrage     [ CharactersScreen ]
                     │  showCharacterDetails(42) → router.push(...)
                     ▼
 push          [ CharactersScreen , CharacterDetailsScreen(characterId = 42) ]
-                    │  retour (flèche du top bar ou touche retour système)
+                    │  retour (flèche de la barre supérieure (TopAppBar) ou touche retour système)
                     │  goBack() / onBack → router.pop()
                     ▼
 pop           [ CharactersScreen ]
