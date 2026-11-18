@@ -1,11 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("io.realm.kotlin")
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization")
 }
@@ -50,17 +48,15 @@ android {
     }
 }
 
-// Keep the Kotlin JVM target aligned with the Java one declared in `android.compileOptions`,
-// and stay on language version 1.9 so the Realm compiler plugin (io.realm.kotlin 3.0.0) passes
-// the compiler's plugin language-version compatibility check.
+// Keep the Kotlin JVM target aligned with the Java one declared in `android.compileOptions`.
+// (The language-version 1.9 pin existed only for the Realm compiler plugin's compatibility
+// check and is dropped together with Realm; see w7-report.md.)
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_1_8)
-    compilerOptions.languageVersion.set(KotlinVersion.KOTLIN_1_9)
 }
 
 val koinVersion: String by project
 val ktorVersion: String by project
-val realmVersion: String by project
 val coroutinesVersion: String by project
 val roomVersion: String by project
 
@@ -106,9 +102,6 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-
-    //Realm
-    implementation("io.realm.kotlin:library-base:$realmVersion")
 
     //Room (coordinates verbatim from versions/2_action_and_navigation_room_retrofit:app/build.gradle.kts)
     implementation("androidx.room:room-runtime:$roomVersion")
