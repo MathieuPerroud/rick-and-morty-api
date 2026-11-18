@@ -11,6 +11,10 @@ plugins {
     // Compose compiler ships with Kotlin 2.x as a Gradle plugin (required by navigation3).
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" apply false
     id("io.realm.kotlin") version "3.0.0" apply false
+    // KSP: no verbatim build for the frozen Kotlin 2.0.21 line exists in this repository;
+    // 2.0.21-1.0.25 is the minimal KSP release on the Kotlin 2.0.21 line (documented
+    // deviation, see w7-report.md).
+    id("com.google.devtools.ksp") version "2.0.21-1.0.25" apply false
     kotlin("jvm") version "2.0.21"
     kotlin("plugin.serialization") version "2.0.21"
 }

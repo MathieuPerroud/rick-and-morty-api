@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("io.realm.kotlin")
+    id("com.google.devtools.ksp")
     kotlin("plugin.serialization")
 }
 
@@ -61,6 +62,7 @@ val koinVersion: String by project
 val ktorVersion: String by project
 val realmVersion: String by project
 val coroutinesVersion: String by project
+val roomVersion: String by project
 
 dependencies {
 
@@ -107,6 +109,11 @@ dependencies {
 
     //Realm
     implementation("io.realm.kotlin:library-base:$realmVersion")
+
+    //Room (coordinates verbatim from versions/2_action_and_navigation_room_retrofit:app/build.gradle.kts)
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     //JetBrains
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
